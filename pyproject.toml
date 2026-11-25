@@ -16,6 +16,7 @@ src = ["src", "api", "tests", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N"]
+ignore = ["E501"]  # line length is handled by black
 
 [tool.black]
 line-length = 100
