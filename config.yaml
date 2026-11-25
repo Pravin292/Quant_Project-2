@@ -19,6 +19,7 @@ benchmark_index: "^NSEI" # Nifty 50, used for beta regression
 model:
   forecast_years: 5
   discounting: "end_of_year" # or "mid_year"
+  default_terminal_growth: 0.05 # capped at the risk-free rate and below WACC when defaults are built
   lease_treatment: "debt" # leases treated as debt in the bridge (documented in README)
 
 # Hard bounds enforced on every assumption (SPEC section 16, Security).

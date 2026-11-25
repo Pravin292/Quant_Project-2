@@ -53,6 +53,22 @@ def net_working_capital(receivables: Series, inventory: Series, payables: Series
     return out
 
 
+def invested_capital(equity: Series, debt: Series, minority: Series, cash: Series) -> Series:
+    """Operating invested capital_t = Equity + Debt (incl. leases) + Minority interest - Cash & investments."""
+    out: Series = []
+    for e, d, m, c in zip(equity, debt, minority, cash, strict=True):
+        out.append(None if e is None or d is None or c is None else e + d + (m or 0.0) - c)
+    return out
+
+
+def roic(ebit: Series, tax_rate: Series, ic: Series) -> Series:
+    """ROIC_t = EBIT_t x (1 - tax rate_t) / invested capital_t (year-end capital)."""
+    return [
+        None if e is None or t is None or c is None or c <= 0 else e * (1.0 - t) / c
+        for e, t, c in zip(ebit, tax_rate, ic, strict=True)
+    ]
+
+
 def summarize(values: Series) -> dict[str, float | None]:
     """mean / min / max / latest over the non-null values."""
     vals = [v for v in values if v is not None]
@@ -84,6 +100,8 @@ class Historical:
     nwc_pct: Series
     cash_conversion: Series  # operating cash flow / net income: is profit real cash?
     fcf_proxy: Series  # operating cash flow - capex (a rough cross-check on FCFF)
+    invested_capital: Series
+    roic: Series
     summary: dict[str, dict[str, float | None]] = field(default_factory=dict)
     sources: dict[str, str] = field(default_factory=dict)
 
@@ -91,7 +109,7 @@ class Historical:
         """One row per fiscal year, for display and the API."""
         keys = [
             "revenue", "revenue_growth", "ebit", "ebit_margin", "ebitda_margin", "tax_rate",
-            "da_pct", "capex_pct", "nwc", "nwc_pct", "cash_conversion", "fcf_proxy",
+            "da_pct", "capex_pct", "nwc", "nwc_pct", "cash_conversion", "fcf_proxy", "invested_capital", "roic",
         ]  # fmt: skip
         return [
             {"fiscal_year": fy, **{k: getattr(self, k)[i] for k in keys}}
@@ -113,6 +131,13 @@ def compute_historical(snap: Snapshot) -> Historical:
         s("balance", "receivables"), s("balance", "inventory"), s("balance", "payables")
     )
     capex = s("cashflow", "capex")
+    tax = effective_tax_rate(s("income", "tax_provision"), s("income", "pretax_income"))
+    ic = invested_capital(
+        s("balance", "equity"),
+        s("balance", "total_debt"),
+        s("balance", "minority_interest"),
+        s("balance", "cash_and_investments"),
+    )
     h = Historical(
         fiscal_years=years,
         revenue=revenue,
@@ -120,7 +145,7 @@ def compute_historical(snap: Snapshot) -> Historical:
         ebit=ebit,
         ebit_margin=margin(ebit, revenue),
         ebitda_margin=margin(ebitda, revenue),
-        tax_rate=effective_tax_rate(s("income", "tax_provision"), s("income", "pretax_income")),
+        tax_rate=tax,
         da_pct=margin(s("income", "depreciation"), revenue),
         capex_pct=margin(capex, revenue),
         nwc=nwc,
@@ -135,6 +160,8 @@ def compute_historical(snap: Snapshot) -> Historical:
             None if c is None or x is None else c - x
             for c, x in zip(s("cashflow", "operating_cash_flow"), capex, strict=True)
         ],
+        invested_capital=ic,
+        roic=roic(ebit, tax, ic),
         sources={
             k: v
             for k, v in snap.get("provenance", {}).items()
@@ -145,7 +172,7 @@ def compute_historical(snap: Snapshot) -> Historical:
         name: summarize(getattr(h, name))
         for name in (
             "revenue_growth", "ebit_margin", "ebitda_margin", "tax_rate", "da_pct",
-            "capex_pct", "nwc_pct", "cash_conversion",
+            "capex_pct", "nwc_pct", "cash_conversion", "roic",
         )
     }  # fmt: skip
     object.__setattr__(h, "summary", summary)
@@ -167,6 +194,8 @@ def format_history(h: Historical) -> str:
         ("NWC % revenue", h.nwc_pct, "{:.2%}"),
         ("Op. cash flow / net income", h.cash_conversion, "{:.2f}x"),
         ("Op. cash flow - CapEx (INR cr)", h.fcf_proxy, "{:,.0f}"),
+        ("Invested capital (INR cr)", h.invested_capital, "{:,.0f}"),
+        ("ROIC", h.roic, "{:.1%}"),
     ]
     lines = [f"{'':32}" + "".join(f"{fy:>12}" for fy in h.fiscal_years)]
     for label, vals, fmt in rows:
