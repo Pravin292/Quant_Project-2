@@ -2,7 +2,7 @@
 
 A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (DCF) model, compares the result with the live market price, and lets anyone stress-test every assumption.
 
-**Status:** planning complete, build starting. See [SPEC.md](SPEC.md) for the full project document: scope, architecture, formulas, milestones, testing plan and final checklist.
+**Status:** Session 1 in progress (valuation engine). Milestone M1 done. See [SPEC.md](SPEC.md) for the full project document: scope, architecture, formulas, milestones, testing plan and final checklist.
 
 ## Planned stack
 

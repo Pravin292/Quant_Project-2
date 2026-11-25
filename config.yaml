@@ -1,0 +1,49 @@
+# Default settings. No company financials live here: those come from the
+# dated snapshot. Market inputs (risk-free rate, ERP, price) are fetched at
+# build time with their source and date, never typed from memory.
+
+company:
+  ticker: "TCS.NS"
+  fiscal_year_end_month: 3
+  statements: "consolidated"
+  currency: "INR"
+
+paths:
+  snapshots_dir: "data/snapshots"
+  samples_dir: "data/samples"
+  cache_dir: "data/cache"
+
+peers: ["INFY.NS", "WIPRO.NS", "HCLTECH.NS", "TECHM.NS"]
+benchmark_index: "^NSEI" # Nifty 50, used for beta regression
+
+model:
+  forecast_years: 5
+  discounting: "end_of_year" # or "mid_year"
+  lease_treatment: "debt" # leases treated as debt in the bridge (documented in README)
+
+# Hard bounds enforced on every assumption (SPEC section 16, Security).
+bounds:
+  revenue_growth: [-0.20, 0.40]
+  ebit_margin: [0.0, 0.60]
+  tax_rate: [0.0, 0.50]
+  capex_pct: [0.0, 0.30]
+  nwc_pct: [-0.30, 0.50]
+  risk_free: [0.0, 0.20]
+  equity_risk_premium: [0.0, 0.20]
+  beta: [0.2, 3.0]
+  terminal_growth: [0.0, 0.08]
+
+# Thresholds for the warnings shown on every valuation (SPEC section 9).
+warnings:
+  terminal_value_share_max: 0.75
+  margin_gap_vs_history: 0.05
+  wacc_band: [0.06, 0.18]
+  fair_value_ratio_high: 2.0
+  fair_value_ratio_low: 0.5
+
+monte_carlo:
+  runs: 10000
+  seed: 42
+
+api:
+  max_request_bytes: 100000
