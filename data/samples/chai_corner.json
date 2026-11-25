@@ -1,0 +1,39 @@
+{
+  "_comment": "Illustrative 'Chai Corner' company (not TCS), INR thousands. First unit test; expected 26.8 per share.",
+  "operating": {
+    "base_revenue": 1000.0,
+    "revenue_growth": [0.10, 0.10, 0.10, 0.10, 0.10],
+    "ebit_margin": [0.20, 0.20, 0.20, 0.20, 0.20],
+    "tax_rate": 0.25,
+    "da_pct": 0.05,
+    "capex_pct": 0.05,
+    "nwc_pct": 0.075
+  },
+  "wacc": {
+    "risk_free": 0.12,
+    "beta": 1.0,
+    "equity_risk_premium": 0.0,
+    "cost_of_debt": 0.10,
+    "debt_weight": 0.0,
+    "tax_rate": 0.25
+  },
+  "terminal": {"growth": 0.04, "exit_multiple": null},
+  "bridge": {
+    "debt": 0.0,
+    "leases": 0.0,
+    "cash_and_investments": 300.0,
+    "minority_interest": 0.0,
+    "diluted_shares": 100.0,
+    "price": 20.0
+  },
+  "mid_year": false,
+  "expected": {
+    "fcff": [157.5, 173.3, 190.6, 209.7, 230.6],
+    "sum_pv_fcff": 678.5,
+    "terminal_value": 2997.8,
+    "pv_terminal_value": 1701.0,
+    "enterprise_value": 2379.5,
+    "equity_value": 2679.5,
+    "fair_value_per_share": 26.8
+  }
+}
