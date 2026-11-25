@@ -31,14 +31,15 @@ import math
 from collections.abc import Callable
 from datetime import UTC, date, datetime
 from pathlib import Path
-from typing import Any
-
-import pandas as pd
+from typing import TYPE_CHECKING, Any
 
 from dcf.exceptions import DataUnavailableError
 
 SCHEMA_VERSION = 1
 CRORE = 1e7
+if TYPE_CHECKING:  # pandas is only needed to build snapshots, not to serve the API
+    import pandas as pd
+
 Snapshot = dict[str, Any]
 
 # Canonical item -> candidate yfinance row labels (first match wins).
@@ -111,6 +112,8 @@ def _pick(df: pd.DataFrame | None, aliases: list[str], col: Any) -> tuple[float 
 
 
 def _find_column(df: pd.DataFrame | None, period_end: Any) -> Any:
+    import pandas as pd
+
     if df is None or df.empty:
         return None
     for c in df.columns:
@@ -157,9 +160,11 @@ def fetch_live_price(
     """Live share price for one request; falls back to the snapshot price if the fetch fails."""
 
     def _default(tk: str) -> float:
-        import yfinance as yf
+        import urllib.parse
 
-        price = _clean(yf.Ticker(tk).fast_info.get("lastPrice"))
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(tk)}?range=1d&interval=1d"
+        payload = json.loads(_http_get(url, timeout=8, user_agent="Mozilla/5.0"))
+        price = _clean(payload["chart"]["result"][0]["meta"].get("regularMarketPrice"))
         if price is None or price <= 0:
             raise ValueError("no price")
         return price
@@ -169,7 +174,7 @@ def fetch_live_price(
         return {
             "price": price,
             "as_of": datetime.now(UTC).isoformat(timespec="seconds"),
-            "source": "yfinance live",
+            "source": "Yahoo Finance chart API (live)",
             "fallback": False,
         }
     except Exception:
@@ -221,6 +226,8 @@ def build_snapshot(
     fy_end_month: int = 3,
 ) -> Snapshot:
     """Turn raw yfinance frames into a validated, dated snapshot. Raises DataUnavailableError."""
+    import pandas as pd
+
     now = now or datetime.now(UTC)
     income = raw.get("income")
     if income is None or income.empty:
@@ -354,6 +361,8 @@ def _fx_rates(
     fx: pd.DataFrame | None, period_ends: dict[str, str], fy_end_month: int, currency: str
 ) -> tuple[dict[str, float] | None, dict[str, float] | None]:
     """Per-fiscal-year (average, period-end) conversion rates into INR; None when already INR."""
+    import pandas as pd
+
     if currency == "INR":
         return None, None
     if fx is None or fx.empty:
@@ -381,6 +390,8 @@ def _trim_info(info: dict[str, Any]) -> dict[str, Any]:
 
 
 def _market_and_prices(raw: dict[str, Any], now: datetime) -> tuple[dict[str, Any], dict[str, Any]]:
+    import pandas as pd
+
     info = raw.get("info", {}) or {}
     daily = raw.get("daily_1y")
     market: dict[str, Any] = {"source": "yfinance", "fetched_at": now.isoformat(timespec="seconds")}
@@ -783,6 +794,8 @@ def _http_get(url: str, timeout: int = 60, user_agent: str = "dcf-valuation-app"
 
 def parse_fred_series(csv_bytes: bytes) -> tuple[float, str]:
     """Latest non-empty value (percent -> decimal) and its date from a FRED CSV."""
+    import pandas as pd
+
     frame = pd.read_csv(io.BytesIO(csv_bytes))
     frame.columns = ["date", "value"]
     frame["value"] = pd.to_numeric(frame["value"], errors="coerce")
@@ -798,6 +811,7 @@ def parse_damodaran_erp(xlsx_bytes: bytes, country: str = "India") -> tuple[floa
     import warnings
 
     import openpyxl
+    import pandas as pd
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

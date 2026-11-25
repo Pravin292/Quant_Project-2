@@ -2,7 +2,7 @@
 
 A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (DCF) model, compares the result with the live market price, and lets anyone stress-test every assumption.
 
-**Status:** Session 1 in progress (valuation engine). Milestone M1 done. See [SPEC.md](SPEC.md) for the full project document: scope, architecture, formulas, milestones, testing plan and final checklist.
+**Status:** Session 1 complete: the valuation engine (M1 to M8) is built and tested. Next: API and dashboard (Session 2). See [PROGRESS.md](PROGRESS.md). See [SPEC.md](SPEC.md) for the full project document: scope, architecture, formulas, milestones, testing plan and final checklist.
 
 ## Planned stack
 
@@ -15,7 +15,7 @@ A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (
 
 | Session | Goal |
 | --- | --- |
-| 1 | Verified valuation engine (milestones M1 to M8) |
+| 1 | Verified valuation engine (milestones M1 to M8), done |
 | 2 | Deployed API and dashboard core (M9 to M12) |
 | 3 | Excel export, Monte Carlo, peer multiples, shipping (M13 to M17) |
 
@@ -24,3 +24,14 @@ Live demo, screenshots, architecture diagram, validation results and limitations
 ## Disclaimer
 
 This is an educational project. Model outputs are estimates based on stated assumptions and public data, not investment, tax or financial advice.
+
+## Run the engine locally
+
+```bash
+make install        # create .venv and install dependencies
+make test           # pytest (unit, property-based, Excel reconciliation)
+.venv/bin/python scripts/run_tcs.py   # default TCS valuation from the committed snapshot
+.venv/bin/python scripts/refresh_snapshot.py --print   # refresh data (needs network)
+```
+
+Verification steps for the engine are in [docs/verification.md](docs/verification.md).
