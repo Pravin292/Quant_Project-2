@@ -31,6 +31,18 @@ Run `.venv/bin/python scripts/refresh_snapshot.py --print` (or open `data/snapsh
 
 Open TCS's annual report (Integrated Annual Report, consolidated statements) and tick each row. I could not check FY2026 or the cash-flow lines against the report myself; FY2023-FY2025 revenue and FY2025 profit agree with TCS's published results as far as I know. Definitions to compare: EBIT here is "Operating Income" (before other income); lease liabilities are the only "debt" (TCS has no borrowings).
 
+### Web check done 26 Nov 2026 (against press coverage and TCS's results release, not the annual report PDF)
+| Line | Result |
+|---|---|
+| FY2026 revenue 267,021 (+4.6%) | Matches published results |
+| FY2025 revenue 255,324 | Matches TCS Q4 FY25 release |
+| FY2026 net income 49,210 (FY2025 48,553) | Matches one report; other outlets show different totals (52,820; 49,454 vs 48,797), probably owners-only vs total or different line definitions. Not settled |
+| FY2026 operating margin 25.10% | TCS reports 25% for FY26, consistent |
+| FY2025 operating cash flow 48,908 | Not confirmed: sources show 48,908 and 51,426. TCS's own free cash flow is 46,449, while snapshot OCF minus CapEx gives 44,971. Likely a definition gap (yfinance OCF and CapEx vs the company's own cash-flow definition) |
+| CapEx lines | Not published in the results releases; needs the annual report cash-flow statement |
+
+Open item for you: tick the OCF and CapEx rows and net income against the annual report. The effect is small: they feed only the FCFF cross-check warning, not the valuation, which builds FCFF from EBIT, tax, D&A, CapEx and NWC.
+
 ## 3. Hand-check two ratios
 * FY2026 revenue growth = 267,021 / 255,324 - 1 = 4.58%
 * FY2026 EBIT margin = 67,022 / 267,021 = 25.10%

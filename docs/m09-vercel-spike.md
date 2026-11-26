@@ -18,3 +18,7 @@ Decision: the API function does not use pandas or yfinance. The data snapshot jo
 2. Open `https://<your-project>.vercel.app/api/health`. Expect `"status": "ok"` and `pandas_loaded: false`.
 3. Note the response time of the first request after idle (cold start) and a warm request, and the bundle size in the deployment's Functions tab. Record them in this file.
 4. If `includeFiles` is not honoured (health returns a 500 about a missing snapshot or config), tell Claude; the fallback is to host only the API on Render or Railway (SPEC section 2).
+
+
+## Status 26 Nov 2026
+Tried to do the import from the in-app browser: vercel.com showed the signed-out page (Continue with GitHub). Signing in needs your credentials, so the import and the timings are still open. Sign in once in the browser pane and Claude can finish steps 1-3.
