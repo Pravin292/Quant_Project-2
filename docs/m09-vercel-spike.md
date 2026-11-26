@@ -22,3 +22,6 @@ Decision: the API function does not use pandas or yfinance. The data snapshot jo
 
 ## Status 26 Nov 2026
 Tried to do the import from the in-app browser: vercel.com showed the signed-out page (Continue with GitHub). Signing in needs your credentials, so the import and the timings are still open. Sign in once in the browser pane and Claude can finish steps 1-3.
+
+## Finding 26 Nov 2026: first deploy returned 500
+Runtime log: `ModuleNotFoundError: No module named 'fastapi'`. Vercel installs from `pyproject.toml` when it exists, and ours had no `dependencies`, so `requirements.txt` was ignored. Fix: list the runtime dependencies in `pyproject.toml` (must stay identical to `requirements.txt`).

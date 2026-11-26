@@ -3,6 +3,15 @@ name = "quant-project-2"
 version = "0.1.0"
 description = "TCS DCF valuation engine and API"
 requires-python = ">=3.11"
+# Vercel installs from this list (it prefers pyproject.toml over requirements.txt).
+# Keep it identical to requirements.txt.
+dependencies = [
+    "numpy==2.5.5",
+    "openpyxl==3.1.5",
+    "pydantic==2.14.4",
+    "fastapi==0.165.0",
+    "pyyaml==6.0.4",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
