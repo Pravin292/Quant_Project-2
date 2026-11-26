@@ -25,3 +25,4 @@ Tried to do the import from the in-app browser: vercel.com showed the signed-out
 
 ## Finding 26 Nov 2026: first deploy returned 500
 Runtime log: `ModuleNotFoundError: No module named 'fastapi'`. Vercel installs from `pyproject.toml` when it exists, and ours had no `dependencies`, so `requirements.txt` was ignored. Fix: list the runtime dependencies in `pyproject.toml` (must stay identical to `requirements.txt`).
+Second failure: `uv lock` could not resolve numpy 2.5.5 (needs Python 3.12+) against `requires-python >=3.11`. Fix: `requires-python >=3.12` (CI already uses 3.12; Vercel runs 3.12).

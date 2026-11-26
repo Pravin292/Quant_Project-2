@@ -2,7 +2,7 @@
 name = "quant-project-2"
 version = "0.1.0"
 description = "TCS DCF valuation engine and API"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 # Vercel installs from this list (it prefers pyproject.toml over requirements.txt).
 # Keep it identical to requirements.txt.
 dependencies = [
@@ -20,7 +20,7 @@ addopts = "-q"
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 src = ["src", "api", "tests", "scripts"]
 
 [tool.ruff.lint]
@@ -29,10 +29,10 @@ ignore = ["E501"]  # line length is handled by black
 
 [tool.black]
 line-length = 100
-target-version = ["py311"]
+target-version = ["py312"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 mypy_path = "src"
 explicit_package_bases = true
