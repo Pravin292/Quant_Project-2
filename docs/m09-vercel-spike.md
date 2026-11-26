@@ -26,3 +26,16 @@ Tried to do the import from the in-app browser: vercel.com showed the signed-out
 ## Finding 26 Nov 2026: first deploy returned 500
 Runtime log: `ModuleNotFoundError: No module named 'fastapi'`. Vercel installs from `pyproject.toml` when it exists, and ours had no `dependencies`, so `requirements.txt` was ignored. Fix: list the runtime dependencies in `pyproject.toml` (must stay identical to `requirements.txt`).
 Second failure: `uv lock` could not resolve numpy 2.5.5 (needs Python 3.12+) against `requires-python >=3.11`. Fix: `requires-python >=3.12` (CI already uses 3.12; Vercel runs 3.12).
+
+## RESULT 26 Nov 2026: spike passed
+Deployed at https://quant-project-2.vercel.app (Python 3.12.16, region bom1, Hobby plan). `/api/health` returns 200 with `status: ok`, snapshot TCS.NS 2026-11-25, `pandas_loaded: false`, so `includeFiles` is honoured and the lean runtime works.
+
+| Measure | Value |
+|---|---|
+| In-function import time (`import_seconds`) | 0.354 s |
+| First request after deploy, measured from Pravin's Mac (includes network) | 0.86 s |
+| Next two requests | 0.62 s, 0.68 s |
+| Build time | 14 s |
+| Bundle size | not read from the dashboard |
+
+Decision: Vercel hosts the API; the Render/Railway fallback is not needed.
