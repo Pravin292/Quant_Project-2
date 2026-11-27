@@ -26,11 +26,19 @@ export interface Palette {
   dark: boolean;
 }
 
+/** Greyscale: darker is further above the market price, lighter further below. */
+const PALETTE: Palette = {
+  above: "#111111",
+  below: "#cfcfd2",
+  neutral: "#7c7c82",
+  third: "#96969c",
+  line: "#e6e6e6",
+  ink: "#0a0a0a",
+  dark: false,
+};
+
 export function usePalette(): Palette {
-  const dark = useMedia("(prefers-color-scheme: dark)");
-  return dark
-    ? { above: "#3987e5", below: "#d95926", neutral: "#7a76a0", third: "#199e70", line: "#3b3670", ink: "#f0efec", dark }
-    : { above: "#2a78d6", below: "#eb6834", neutral: "#9a98b0", third: "#1baf7a", line: "#c9c6e8", ink: "#0b0b0b", dark };
+  return PALETTE;
 }
 
 class Fallback extends Component<{ children: ReactNode }, { failed: boolean }> {

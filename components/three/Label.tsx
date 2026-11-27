@@ -18,16 +18,19 @@ export default function Label({
   const { texture, ratio } = useMemo(() => {
     const canvas = document.createElement("canvas");
     const draw = canvas.getContext("2d")!;
-    const font = "600 44px system-ui, sans-serif";
+    const font = "500 40px system-ui, sans-serif";
     draw.font = font;
     canvas.width = Math.ceil(draw.measureText(text).width) + 40;
     canvas.height = 72;
     draw.font = font; // resizing the canvas resets the context
-    draw.fillStyle = dark ? "rgba(17,23,41,0.9)" : "rgba(255,255,255,0.92)";
+    draw.fillStyle = dark ? "rgba(20,20,20,0.92)" : "rgba(255,255,255,0.95)";
     draw.beginPath();
     draw.roundRect(0, 0, canvas.width, canvas.height, 18);
     draw.fill();
-    draw.fillStyle = dark ? "#eef1f8" : "#0c1020";
+    draw.strokeStyle = dark ? "#333" : "#dddddd";
+    draw.lineWidth = 2;
+    draw.stroke();
+    draw.fillStyle = dark ? "#fafafa" : "#0a0a0a";
     draw.textBaseline = "middle";
     draw.fillText(text, 20, 38);
     const t = new THREE.CanvasTexture(canvas);

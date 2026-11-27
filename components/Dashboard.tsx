@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { download, useApi, useDebounced } from "@/lib/api";
-import { day, rupees } from "@/lib/format";
+import { rupees } from "@/lib/format";
 import { decodeShare, encodeShare, matchesDefaults, type Shared } from "@/lib/share";
 import type { Assumptions, Defaults, ScenarioName, Scenarios, Valuation } from "@/lib/types";
 import BridgeTab from "./BridgeTab";
@@ -50,13 +50,20 @@ export default function Dashboard() {
   const ready = defaults.data && defaults.data.company.ticker === start?.ticker ? defaults.data : null;
 
   return (
-    <div className="mx-auto max-w-[1560px] px-4 pb-20 sm:px-6">
-      <header className="py-6">
-        <h1 className="brand-text text-3xl font-bold sm:text-4xl">{ready?.company.name ?? "TCS"}: DCF valuation</h1>
-        <p className="text-sm text-(--ink-2)">
-          Five-year discounted cash flow model. Move any assumption and the value updates.
-          {ready && ` Statements fetched ${day(ready.company.fetched_at)}.`}
-        </p>
+    <div className="mx-auto max-w-[1180px] px-4 pb-20 sm:px-6">
+      <header className="flex items-center justify-between border-b border-(--line) py-4">
+        <h1 className="text-sm font-semibold">
+          <span aria-hidden="true" className="mr-2 inline-block h-2.5 w-2.5 rounded-[3px] bg-(--ink)" />
+          {ready?.company.name ?? "TCS"}: DCF valuation
+        </h1>
+        <a
+          className="text-xs text-(--ink-2) hover:text-(--ink)"
+          href="https://github.com/Pravin292/Quant_Project-2"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Source code ↗
+        </a>
       </header>
       {defaults.error ? (
         <Notice kind="error">{defaults.error} Reload the page to try again.</Notice>
@@ -153,7 +160,7 @@ function Model({
 
   return (
     <div className="space-y-6">
-        <div className="sticky top-0 z-10 -mx-4 z-20 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page) px-4 py-2 lg:mx-0 lg:rounded-2xl lg:border">
+        <div className="sticky top-0 z-10 -mx-4 z-20 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page)/90 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
           <div aria-live="polite" className="text-sm">
             Fair value <strong data-testid="fair-value">{rupees(v?.fair_value_per_share)}</strong> vs price{" "}
             {rupees(v?.price)}
@@ -190,7 +197,7 @@ function Model({
         {error && <Notice kind="error">{error}</Notice>}
         {exportError && <Notice kind="error">{exportError}</Notice>}
         {v && <Hero defaults={defaults} assumptions={lastActive} valuation={v} scenario={scenario} />}
-        <div className={`gap-6 lg:grid ${panel ? "lg:grid-cols-[320px_minmax(0,1fr)]" : ""}`}>
+        <div className={`gap-6 lg:grid ${panel ? "lg:grid-cols-[272px_minmax(0,1fr)]" : ""}`}>
       <aside className={panel ? "" : "lg:hidden"}>
         <div className={`${drawer ? "block" : "hidden"} panel max-lg:fixed max-lg:inset-x-2 max-lg:bottom-10 max-lg:z-30 max-lg:max-h-[55vh] max-lg:overflow-y-auto max-lg:bg-(--surface-solid)! p-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto ${panel ? "lg:block" : "lg:hidden"}`}>
           <InputsPanel
@@ -208,7 +215,7 @@ function Model({
         </div>
       </aside>
       <main className="min-w-0 space-y-6">
-        <div role="tablist" aria-label="Outputs" className="flex gap-2 overflow-x-auto py-1">
+        <div role="tablist" aria-label="Outputs" className="flex gap-1 overflow-x-auto border-b border-(--line)">
           {TABS.map((t) => (
             <button
               key={t}
@@ -216,7 +223,7 @@ function Model({
               role="tab"
               aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`chip whitespace-nowrap ${tab === t ? "chip-solid font-semibold" : "text-(--ink-2)"}`}
+              className={`-mb-px border-b-2 px-3 py-2 text-[13px] whitespace-nowrap ${tab === t ? "border-(--ink) font-semibold" : "border-transparent text-(--ink-2) hover:text-(--ink)"}`}
             >
               {t}
             </button>

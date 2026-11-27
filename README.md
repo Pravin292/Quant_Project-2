@@ -13,6 +13,10 @@ A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (
 - Hosting: Vercel (frontend and Python API in one project)
 - Data: dated JSON snapshots committed to the repo
 
+## Third-party code
+
+`components/reactbits/` holds CountUp, SpotlightCard and BlurText from [React Bits](https://reactbits.dev) by David Haz, used under its MIT + Commons Clause license (see `components/reactbits/LICENSE.md`).
+
 ## Disclaimer
 
 This is an educational project. Model outputs are estimates based on stated assumptions and public data, not investment, tax or financial advice.

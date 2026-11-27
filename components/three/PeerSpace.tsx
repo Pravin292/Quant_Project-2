@@ -29,7 +29,7 @@ function Points({ companies, selected }: { companies: Multiples[]; selected: str
             <Line points={[[0, 0, 0], [0, y, 0]]} color={palette.ink} transparent opacity={0.35} lineWidth={1} />
             <mesh position={[0, y, 0]}>
               <sphereGeometry args={[radius, 32, 32]} />
-              <meshStandardMaterial color={mine ? palette.below : palette.above} roughness={0.25} metalness={0.35} />
+              <meshStandardMaterial color={mine ? palette.above : "#a8a8ad"} roughness={0.25} metalness={0.35} />
             </mesh>
             <Label
               position={[0, y + radius + 0.3, 0]}

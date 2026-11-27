@@ -4,8 +4,8 @@ import { useId, useState, type ReactNode } from "react";
 
 export function Card({ title, children, note }: { title?: string; children: ReactNode; note?: ReactNode }) {
   return (
-    <section className="panel rise min-w-0 p-5">
-      {title && <h2 className="mb-3 text-sm font-semibold">{title}</h2>}
+    <section className="panel min-w-0 p-5">
+      {title && <h2 className="mb-3 text-[13px] font-semibold">{title}</h2>}
       {children}
       {note && <p className="mt-3 text-xs text-(--ink-2)">{note}</p>}
     </section>
@@ -49,12 +49,12 @@ export function Source({ text }: { text: string | undefined }) {
 
 export function Stat({ label, value, sub, source }: { label: string; value: string; sub?: string; source?: string }) {
   return (
-    <div className="panel rise min-w-0 p-5">
+    <div className="panel min-w-0 p-5">
       <div className="text-xs text-(--ink-2)">
         {label}
         <Source text={source} />
       </div>
-      <div className="display mt-1 text-3xl font-semibold">{value}</div>
+      <div className="mt-1 text-lg font-semibold tracking-tight tabular-nums">{value}</div>
       {sub && <div className="mt-1 text-xs text-(--ink-2)">{sub}</div>}
     </div>
   );

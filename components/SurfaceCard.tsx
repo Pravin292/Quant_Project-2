@@ -13,7 +13,7 @@ export default function SurfaceCard({ assumptions, height }: { assumptions: Assu
   return (
     <Card
       title="Valuation landscape: WACC × terminal growth"
-      note="Height is fair value per share. The flat sheet is the market price: blue ground rises above it, orange sits below."
+      note="Height is fair value per share. The flat sheet is the market price: darker ground rises above it, lighter ground sits below."
     >
       {query.error ? (
         <Notice kind="error">{query.error}</Notice>

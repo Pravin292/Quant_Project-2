@@ -7,12 +7,13 @@ import { TornadoChart } from "./charts";
 import SurfaceCard from "./SurfaceCard";
 import { Card, Notice, Skeleton, Table } from "./ui";
 
-/** Blue above the market price, orange below, stronger the further away (full at 50%). */
-function shade(value: number | null, price: number | null): string | undefined {
+/** Black cells are above the market price; grey deepens the further below it (full at 50%). */
+function shade(value: number | null, price: number | null): React.CSSProperties | undefined {
   if (value === null || !price) return undefined;
   const gap = value / price - 1;
-  const strength = Math.round(Math.min(Math.abs(gap) / 0.5, 1) * 55);
-  return `color-mix(in srgb, var(${gap >= 0 ? "--series-1" : "--series-2"}) ${strength}%, var(--surface))`;
+  if (gap >= 0) return { background: "var(--ink)", color: "#ffffff" };
+  const strength = Math.round(Math.min(-gap / 0.5, 1) * 18);
+  return { background: `color-mix(in srgb, var(--ink) ${strength}%, var(--surface))` };
 }
 
 function Heatmap({ grid, price }: { grid: Grid; price: number | null }) {
@@ -41,7 +42,7 @@ function Heatmap({ grid, price }: { grid: Grid; price: number | null }) {
                   <td
                     key={j}
                     className={`rounded p-2 text-center ${base ? "font-bold outline-2 -outline-offset-2 outline-(--ink)" : ""}`}
-                    style={{ background: shade(value, price) }}
+                    style={shade(value, price)}
                     title={`${grid.column_label} ${pct(grid.columns[j])}, ${grid.row_label} ${pct(r)}: ${rupees(value)}${value !== null && price ? ` (${pct(value / price - 1)} vs price)` : ""}`}
                   >
                     {value === null ? "—" : rupees(value)}
@@ -64,7 +65,7 @@ export default function SensitivityTab({ assumptions }: { assumptions: Assumptio
   if (error) return <Notice kind="error">{error}</Notice>;
   if (!grids.data || !tornado.data) return <Skeleton />;
   const base = tornado.data.base_fair_value;
-  const note = `Fair value per share. Blue is above the market price of ${rupees(price)}, orange below. The outlined cell is the current case; a dash means growth is not below WACC.`;
+  const note = `Fair value per share. Black cells are above the market price of ${rupees(price)}; grey deepens the further below it. The outlined cell is the current case; a dash means growth is not below WACC.`;
   return (
     <div className={`space-y-4 ${grids.loading || tornado.loading ? "opacity-60" : ""}`}>
       <SurfaceCard assumptions={assumptions} height={480} />

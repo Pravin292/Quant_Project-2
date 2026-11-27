@@ -79,7 +79,7 @@ export default function Histogram({ bins, price, median }: { bins: Bin[]; price:
             {rupees(b.from)} to {rupees(b.to)}: <strong>{num(b.count)} runs</strong>
           </>
         ) : (
-          <span className="text-(--ink-2)">Orange bars are below the market price, blue above. Point at a bar for its count.</span>
+          <span className="text-(--ink-2)">Grey bars are below the market price, black above. Point at a bar for its count.</span>
         )}
       </p>
       <Scene label={`3D histogram of simulated fair values. Median ${rupees(median)}, market price ${rupees(price)}.`}>

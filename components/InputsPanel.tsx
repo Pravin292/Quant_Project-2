@@ -134,7 +134,7 @@ export default function InputsPanel({
               type="button"
               aria-pressed={scenario === s}
               onClick={() => onScenario(s)}
-              className={`p-2 text-sm capitalize ${scenario === s ? "bg-linear-to-r from-[#5b3fd6] to-[#1f6fc4] font-semibold text-white" : ""}`}
+              className={`p-2 text-sm capitalize ${scenario === s ? "bg-(--ink) font-semibold text-white" : ""}`}
             >
               {s}
             </button>

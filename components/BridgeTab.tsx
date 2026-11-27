@@ -20,7 +20,7 @@ export default function BridgeTab({ defaults, valuation: v, shares }: { defaults
   ];
   return (
     <div className="space-y-4">
-      <Card title="The bridge in 3D (₹ crore)" note="Blue adds value, orange subtracts, grey is a total. Very small steps are drawn as thin slabs.">
+      <Card title="The bridge in 3D (₹ crore)" note="Black adds value, light grey subtracts, mid grey is a total. Very small steps are drawn as thin slabs.">
         <Bars3D
           label="3D waterfall from present values to equity value"
           columns={["Flows", "Terminal", "EV", "Debt", "Leases", "Cash", "Minority", "Equity"]}
@@ -39,7 +39,7 @@ export default function BridgeTab({ defaults, valuation: v, shares }: { defaults
           })}
         />
       </Card>
-      <Card title="From cash flows to equity value (₹ crore)" note="Blue adds value, orange subtracts, grey is a total.">
+      <Card title="From cash flows to equity value (₹ crore)" note="Black adds value, grey subtracts, dark grey is a total.">
         <Waterfall steps={steps} format={(x) => num(x)} />
       </Card>
       <Card title="Bridge table">
