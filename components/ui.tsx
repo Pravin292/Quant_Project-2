@@ -27,7 +27,7 @@ export function Source({ text }: { text: string | undefined }) {
         type="button"
         aria-label="Show source"
         aria-describedby={open ? id : undefined}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-(--line) text-[10px] text-(--ink-2)"
+        className="-my-1 ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full border border-(--line) text-[10px] text-(--ink-2)"
         onClick={() => setOpen((o) => !o)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
