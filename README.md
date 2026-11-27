@@ -2,36 +2,30 @@
 
 A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (DCF) model, compares the result with the live market price, and lets anyone stress-test every assumption.
 
-**Status:** Session 1 complete: the valuation engine (M1 to M8) is built and tested. Next: API and dashboard (Session 2). See [PROGRESS.md](PROGRESS.md). See [SPEC.md](SPEC.md) for the full project document: scope, architecture, formulas, milestones, testing plan and final checklist.
+**Live:** https://quant-project-2.vercel.app
 
-## Planned stack
+**Status:** Sessions 1 and 2 built: valuation engine, API, and the dashboard (Summary, Historical, Forecast, Valuation bridge and Sensitivity tabs, scenarios, tornado chart, shareable link). Session 3 adds Monte Carlo and Peers tabs, downloads, the case study and the v1.0 release. See [PROGRESS.md](PROGRESS.md) and [SPEC.md](SPEC.md).
 
-- Backend: Python 3.11+, FastAPI, pandas, numpy, yfinance
+## Stack
+
+- Backend: Python 3.12, FastAPI, numpy, openpyxl (pandas and yfinance only in the data refresh job)
 - Frontend: Next.js, TypeScript, Tailwind CSS, Recharts
 - Hosting: Vercel (frontend and Python API in one project)
-- Data: daily JSON snapshot refreshed by GitHub Actions
-
-## Roadmap
-
-| Session | Goal |
-| --- | --- |
-| 1 | Verified valuation engine (milestones M1 to M8), done |
-| 2 | Deployed API and dashboard core (M9 to M12) |
-| 3 | Excel export, Monte Carlo, peer multiples, shipping (M13 to M17) |
-
-Live demo, screenshots, architecture diagram, validation results and limitations will be added here as the milestones are completed.
+- Data: dated JSON snapshots committed to the repo
 
 ## Disclaimer
 
 This is an educational project. Model outputs are estimates based on stated assumptions and public data, not investment, tax or financial advice.
 
-## Run the engine locally
+## Run locally
 
 ```bash
-make install        # create .venv and install dependencies
-make test           # pytest (unit, property-based, Excel reconciliation)
-.venv/bin/python scripts/run_tcs.py   # default TCS valuation from the committed snapshot
+make install        # Python venv and npm packages
+make run            # API on http://127.0.0.1:8000
+make web            # dashboard on http://localhost:3000 (second terminal)
+make check          # lint, types and tests for Python
+make check-web      # lint, build and types for the frontend
 .venv/bin/python scripts/refresh_snapshot.py --print   # refresh data (needs network)
 ```
 
-Verification steps for the engine are in [docs/verification.md](docs/verification.md).
+API reference: `/api/docs`. Verification steps for the engine are in [docs/verification.md](docs/verification.md).

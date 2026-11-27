@@ -95,6 +95,9 @@ def test_analysis_endpoints() -> None:
     sc = client.post("/api/scenarios", json={"assumptions": a}).json()
     values = [sc["scenarios"][n]["fair_value_per_share"] for n in ("bear", "base", "bull")]
     assert values[0] < values[1] < values[2] and values[1] == pytest.approx(base)
+    for name, row in sc["scenarios"].items():  # returned inputs reproduce each case
+        again = client.post("/api/valuation", json=row["assumptions"]).json()
+        assert again["fair_value_per_share"] == pytest.approx(row["fair_value_per_share"]), name
     mc = client.post("/api/montecarlo", json={"assumptions": a}).json()
     assert mc["runs"] == 10_000
     assert mc["percentiles"]["p5"] < base < mc["percentiles"]["p95"]

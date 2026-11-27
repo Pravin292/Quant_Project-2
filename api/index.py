@@ -7,6 +7,7 @@ import sys
 import time
 from collections import OrderedDict
 from collections.abc import Callable
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -209,9 +210,13 @@ def post_tornado(body: schemas.TornadoRequest, response: Response) -> Any:
 def post_scenarios(body: schemas.ScenarioRequest, response: Response) -> Any:
     def compute() -> dict[str, Any]:
         a = body.assumptions
-        return scenarios.run_scenarios(
-            _checked(a), service.scenario_specs(a.ticker), body.probabilities
-        )
+        inputs = _checked(a)
+        specs = service.scenario_specs(a.ticker)
+        out = scenarios.run_scenarios(inputs, specs, body.probabilities)
+        for name, row in out["scenarios"].items():  # the exact inputs behind each case
+            adjusted = asdict(scenarios.apply_scenario(inputs, specs[name]))
+            row["assumptions"] = {**adjusted, "ticker": a.ticker}
+        return out
 
     return _cached(response, "scenarios:" + body.model_dump_json(), compute)
 
