@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "{src/**,data/snapshots/**,config.yaml}",
+      "includeFiles": "{src/**,api/**,data/snapshots/**,config.yaml}",
       "maxDuration": 30
     }
   },
