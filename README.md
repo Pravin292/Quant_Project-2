@@ -4,12 +4,12 @@ A full-stack web app that values TCS shares with a 5-year Discounted Cash Flow (
 
 **Live:** https://quant-project-2.vercel.app
 
-**Status:** Sessions 1 and 2 built: valuation engine, API, and the dashboard (Summary, Historical, Forecast, Valuation bridge and Sensitivity tabs, scenarios, tornado chart, shareable link). Session 3 adds Monte Carlo and Peers tabs, downloads, the case study and the v1.0 release. See [PROGRESS.md](PROGRESS.md) and [SPEC.md](SPEC.md).
+**Status:** Sessions 1 and 2 built: valuation engine, API, and the dashboard (Summary, Historical, Forecast, Valuation bridge and Sensitivity tabs, scenarios, tornado chart, shareable link). Session 3 in progress: Excel download, Monte Carlo and Peers tabs and 3D views are in; the case study and v1.0 release are not yet. See [PROGRESS.md](PROGRESS.md) and [SPEC.md](SPEC.md).
 
 ## Stack
 
 - Backend: Python 3.12, FastAPI, numpy, openpyxl (pandas and yfinance only in the data refresh job)
-- Frontend: Next.js, TypeScript, Tailwind CSS, Recharts
+- Frontend: Next.js, TypeScript, Tailwind CSS, Recharts, three.js
 - Hosting: Vercel (frontend and Python API in one project)
 - Data: dated JSON snapshots committed to the repo
 

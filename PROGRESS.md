@@ -47,5 +47,13 @@ Deployed at https://quant-project-2.vercel.app and checked there (see docs/perfo
 
 Notes: F28 rate limit and cache are per server instance. Set `ALLOWED_ORIGINS` only if another origin must call the API. Tickers are limited to committed snapshots.
 
-## Next: Session 3
-Monte Carlo, Peers, football field (F21) and Methodology (F24) tabs, reverse DCF and probability editing UI, Excel button (API ready) and PDF report, Screener upload, snapshot GitHub Action, p50/p95 table, Playwright smoke test (F29), case study, architecture diagram, AI explainer (F17), v1.0.
+## Session 3 (in progress)
+| Item | State |
+|---|---|
+| High-fidelity design and 3D (owner request, beyond SPEC) | done: new theme, hero, 3D valuation surface (Summary, Sensitivity), 3D histogram, 3D peer view; flat tables kept for every 3D view |
+| M13 Excel download and ticker field | done; owner to open the file in Excel and confirm live formulas |
+| M14 Monte Carlo tab | done: median within a rupee or two of base, percentile table, caveat |
+| M15 Peers tab | done: implied values, timestamps |
+| M16 ship | next: snapshot Action, README with screenshots and p50/p95, architecture diagram, case study PDF, repo polish, v1.0 |
+| Priority A left | F21 football field, probability editing UI (F26), p50/p95 table (F28) |
+| Priority B / optional | F24 Methodology tab, F25 PDF report, F29 smoke test, M17 AI explainer (needs an LLM API key), Screener upload in the UI |

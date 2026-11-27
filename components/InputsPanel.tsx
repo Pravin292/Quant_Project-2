@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import type { Assumptions, Defaults, ScenarioName } from "@/lib/types";
 import { pct } from "@/lib/format";
 import { Source } from "./ui";
@@ -49,6 +51,49 @@ function Slider({
   );
 }
 
+function TickerField({ current, tickers, onTicker }: { current: string; tickers: string[]; onTicker: (t: string) => void }) {
+  const [text, setText] = useState(current);
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const typed = text.trim().toUpperCase();
+        const match = tickers.find((t) => t === typed || t === `${typed}.NS`);
+        if (!match) return setError(`No data for ${typed || "that ticker"}. Try ${tickers.join(", ")}.`);
+        setError(null);
+        if (match !== current) onTicker(match);
+        else setText(match);
+      }}
+    >
+      <label className="block text-xs">
+        Company ticker
+        <span className="mt-1 flex gap-2">
+          <input
+            list="tickers"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="w-full min-w-0 rounded-lg border border-(--line) bg-(--surface) p-2 text-sm uppercase"
+          />
+          <button type="submit" className="chip">
+            Load
+          </button>
+        </span>
+      </label>
+      <datalist id="tickers">
+        {tickers.map((t) => (
+          <option key={t} value={t} />
+        ))}
+      </datalist>
+      {error && (
+        <p role="alert" className="mt-1 text-xs">
+          {error}
+        </p>
+      )}
+    </form>
+  );
+}
+
 export default function InputsPanel({
   defaults,
   assumptions,
@@ -78,18 +123,7 @@ export default function InputsPanel({
 
   return (
     <div className="space-y-4">
-      <label className="block text-xs">
-        Company ticker
-        <select
-          className="mt-1 w-full rounded border border-(--line) bg-(--surface) p-2 text-sm"
-          value={defaults.company.ticker}
-          onChange={(e) => onTicker(e.target.value)}
-        >
-          {defaults.tickers.map((t) => (
-            <option key={t}>{t}</option>
-          ))}
-        </select>
-      </label>
+      <TickerField key={defaults.company.ticker} current={defaults.company.ticker} tickers={defaults.tickers} onTicker={onTicker} />
 
       <fieldset>
         <legend className="text-xs">Scenario</legend>
@@ -171,7 +205,7 @@ export default function InputsPanel({
         </label>
       </fieldset>
 
-      <button type="button" onClick={onReset} className="w-full rounded border border-(--line) p-2 text-sm">
+      <button type="button" onClick={onReset} className="chip w-full">
         Reset to defaults
       </button>
     </div>
