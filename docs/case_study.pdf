@@ -1,0 +1,248 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 6208 >>
+stream
+BT /F2 17 Tf 0.050 g 48.00 784.00 Td (Valuing TCS with a discounted cash flow model) Tj ET
+BT /F1 8.5 Tf 0.420 g 48.00 768.00 Td (Case study | statements fetched 2026-11-27, price of 2026-11-26 | money in INR) Tj ET
+0.100 G 1 w 48.00 758.00 m 547.00 758.00 l S
+BT /F1 7 Tf 0.450 g 48.00 30.00 Td (Educational model. Outputs are estimates based on stated assumptions and public data, not investment, tax or financial advice.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 736.00 Td (What a DCF does) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 721.00 Td (A company is worth the cash it can pay its lenders and owners in future, counted in today's money. I forecast five years of) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 708.58 Td (free cash flow, add a value for all later years, discount both at the weighted cost of capital, then subtract what is owed and) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 696.16 Td (divide by the shares.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 674.74 Td (Assumptions and why) Tj ET
+BT /F2 8.5 Tf 0.050 g 48.00 658.74 Td (Assumption) Tj ET
+BT /F2 8.5 Tf 0.050 g 256.15 658.74 Td (Value) Tj ET
+BT /F2 8.5 Tf 0.050 g 525.15 658.74 Td (Basis) Tj ET
+0.820 G 0.6 w 48.00 654.74 m 547.00 654.74 l S
+BT /F1 8.5 Tf 0.050 g 48.00 643.87 Td (Revenue growth) Tj ET
+BT /F1 8.5 Tf 0.050 g 227.22 643.87 Td (5.8% to 5.0%) Tj ET
+BT /F1 8.5 Tf 0.050 g 435.46 643.87 Td (mean 5.8% fading to terminal) Tj ET
+0.820 G 0.6 w 48.00 639.87 m 547.00 639.87 l S
+BT /F1 8.5 Tf 0.050 g 48.00 628.99 Td (EBIT margin) Tj ET
+BT /F1 8.5 Tf 0.050 g 253.96 628.99 Td (24.6%) Tj ET
+BT /F1 8.5 Tf 0.050 g 458.55 628.99 Td (history 24.1% to 25.1%) Tj ET
+0.820 G 0.6 w 48.00 624.99 m 547.00 624.99 l S
+BT /F1 8.5 Tf 0.050 g 48.00 614.12 Td (Tax rate) Tj ET
+BT /F1 8.5 Tf 0.050 g 253.96 614.12 Td (24.5%) Tj ET
+BT /F1 8.5 Tf 0.050 g 473.90 614.12 Td (latest effective rate) Tj ET
+0.820 G 0.6 w 48.00 610.12 m 547.00 610.12 l S
+BT /F1 8.5 Tf 0.050 g 48.00 599.24 Td (Beta) Tj ET
+BT /F1 8.5 Tf 0.050 g 261.27 599.24 Td (0.89) Tj ET
+BT /F1 8.5 Tf 0.050 g 424.28 599.24 Td (regression, 95% range 0.65-1.02) Tj ET
+0.820 G 0.6 w 48.00 595.24 m 547.00 595.24 l S
+BT /F1 8.5 Tf 0.050 g 48.00 584.37 Td (Cost of equity) Tj ET
+BT /F1 8.5 Tf 0.050 g 249.24 584.37 Td (13.67%) Tj ET
+BT /F1 8.5 Tf 0.050 g 463.65 584.37 Td (7.38% + beta x 7.08%) Tj ET
+0.820 G 0.6 w 48.00 580.37 m 547.00 580.37 l S
+BT /F1 8.5 Tf 0.050 g 48.00 569.49 Td (WACC) Tj ET
+BT /F1 8.5 Tf 0.050 g 249.24 569.49 Td (13.62%) Tj ET
+BT /F1 8.5 Tf 0.050 g 441.17 569.49 Td (debt is only lease liabilities) Tj ET
+0.820 G 0.6 w 48.00 565.49 m 547.00 565.49 l S
+BT /F1 8.5 Tf 0.050 g 48.00 554.62 Td (Terminal growth) Tj ET
+BT /F1 8.5 Tf 0.050 g 253.96 554.62 Td (5.00%) Tj ET
+BT /F1 8.5 Tf 0.050 g 446.27 554.62 Td (capped at the risk-free rate) Tj ET
+0.820 G 0.6 w 48.00 550.62 m 547.00 550.62 l S
+BT /F2 11 Tf 0.050 g 48.00 533.74 Td (Result) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 518.74 Td (Model value INR 1,766 per share against a price of INR 2,640 \(-33.1%\). Bear / base / bull: 1,528 / 1,766 / 2,045. The) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 506.32 Td (terminal value is 68% of enterprise value. The price of INR 2,640.30 implies revenue growth of 18.84% a year for 5 years) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 493.90 Td (with the other assumptions unchanged.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 472.48 Td (Value per share \(INR\): WACC x terminal growth) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 452.48 Td (Growth / WACC) Tj ET
+BT /F2 8 Tf 0.050 g 149.19 452.48 Td (11.6%) Tj ET
+BT /F2 8 Tf 0.050 g 234.19 452.48 Td (12.6%) Tj ET
+BT /F2 8 Tf 0.050 g 319.19 452.48 Td (13.6%) Tj ET
+BT /F2 8 Tf 0.050 g 404.19 452.48 Td (14.6%) Tj ET
+BT /F2 8 Tf 0.050 g 489.19 452.48 Td (15.6%) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 434.48 Td (4.0%) Tj ET
+0.872 g 119.00 429.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 149.77 434.48 Td (2,050) Tj ET
+0.833 g 204.00 429.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 234.77 434.48 Td (1,820) Tj ET
+0.803 g 289.00 429.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 319.77 434.48 Td (1,638) Tj ET
+0.778 g 374.00 429.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 404.77 434.48 Td (1,490) Tj ET
+0.758 g 459.00 429.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 489.77 434.48 Td (1,367) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 416.48 Td (4.5%) Tj ET
+0.889 g 119.00 411.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 149.77 416.48 Td (2,155) Tj ET
+0.846 g 204.00 411.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 234.77 416.48 Td (1,899) Tj ET
+0.813 g 289.00 411.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 319.77 416.48 Td (1,698) Tj ET
+0.786 g 374.00 411.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 404.77 416.48 Td (1,537) Tj ET
+0.764 g 459.00 411.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 489.77 416.48 Td (1,406) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 398.48 Td (5.0%) Tj ET
+0.909 g 119.00 393.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 149.77 398.48 Td (2,276) Tj ET
+0.861 g 204.00 393.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 234.77 398.48 Td (1,988) Tj ET
+0.824 g 289.00 393.48 83.00 16.00 re f
+BT /F2 8.5 Tf 0.050 g 319.77 398.48 Td (1,766) Tj ET
+0.795 g 374.00 393.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 404.77 398.48 Td (1,590) Tj ET
+0.771 g 459.00 393.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 489.77 398.48 Td (1,448) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 380.48 Td (5.5%) Tj ET
+0.933 g 119.00 375.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 149.77 380.48 Td (2,417) Tj ET
+0.878 g 204.00 375.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 234.77 380.48 Td (2,089) Tj ET
+0.837 g 289.00 375.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 319.77 380.48 Td (1,842) Tj ET
+0.805 g 374.00 375.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 404.77 380.48 Td (1,649) Tj ET
+0.779 g 459.00 375.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 489.77 380.48 Td (1,494) Tj ET
+BT /F2 8 Tf 0.050 g 48.00 362.48 Td (6.0%) Tj ET
+0.960 g 119.00 357.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 149.77 362.48 Td (2,583) Tj ET
+0.898 g 204.00 357.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 234.77 362.48 Td (2,206) Tj ET
+0.851 g 289.00 357.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 319.77 362.48 Td (1,928) Tj ET
+0.816 g 374.00 357.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 404.77 362.48 Td (1,714) Tj ET
+0.787 g 459.00 357.48 83.00 16.00 re f
+BT /F1 8.5 Tf 0.050 g 489.77 362.48 Td (1,545) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 5872 >>
+stream
+BT /F2 17 Tf 0.050 g 48.00 784.00 Td (Range, cross-check and limits) Tj ET
+BT /F1 8.5 Tf 0.420 g 48.00 768.00 Td (Case study | statements fetched 2026-11-27, price of 2026-11-26 | money in INR) Tj ET
+0.100 G 1 w 48.00 758.00 m 547.00 758.00 l S
+BT /F1 7 Tf 0.450 g 48.00 30.00 Td (Educational model. Outputs are estimates based on stated assumptions and public data, not investment, tax or financial advice.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 736.00 Td (Monte Carlo \(10,000 runs, fixed seed\)) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 721.00 Td (5th to 95th percentile INR 1,548 to 2,053, median 1,767. Share of runs above the price: 0.01%. The range reflects only the) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 708.58 Td (input ranges chosen, not real-world odds.) Tj ET
+0.350 g 48.00 567.16 10.97 0.65 re f
+0.350 g 60.48 567.16 10.97 0.90 re f
+0.350 g 72.95 567.16 10.97 2.71 re f
+0.350 g 85.42 567.16 10.97 6.72 re f
+0.350 g 97.90 567.16 10.97 12.92 re f
+0.350 g 110.38 567.16 10.97 24.93 re f
+0.350 g 122.85 567.16 10.97 36.94 re f
+0.350 g 135.32 567.16 10.97 60.45 re f
+0.350 g 147.80 567.16 10.97 81.12 re f
+0.350 g 160.27 567.16 10.97 96.10 re f
+0.350 g 172.75 567.16 10.97 111.99 re f
+0.350 g 185.22 567.16 10.97 112.77 re f
+0.350 g 197.70 567.16 10.97 120.00 re f
+0.350 g 210.17 567.16 10.97 111.22 re f
+0.350 g 222.65 567.16 10.97 100.75 re f
+0.350 g 235.12 567.16 10.97 86.29 re f
+0.350 g 247.60 567.16 10.97 77.76 re f
+0.350 g 260.07 567.16 10.97 60.19 re f
+0.350 g 272.55 567.16 10.97 52.70 re f
+0.350 g 285.02 567.16 10.97 37.59 re f
+0.350 g 297.50 567.16 10.97 30.61 re f
+0.350 g 309.97 567.16 10.97 19.76 re f
+0.350 g 322.45 567.16 10.97 16.40 re f
+0.350 g 334.93 567.16 10.97 9.17 re f
+0.350 g 347.40 567.16 10.97 5.04 re f
+0.350 g 359.88 567.16 10.97 5.68 re f
+0.350 g 372.35 567.16 10.97 3.88 re f
+0.350 g 384.82 567.16 10.97 2.71 re f
+0.350 g 397.30 567.16 10.97 0.90 re f
+0.350 g 409.77 567.16 10.97 1.16 re f
+0.350 g 422.25 567.16 10.97 0.39 re f
+0.350 g 434.72 567.16 10.97 0.26 re f
+0.350 g 447.20 567.16 10.97 0.13 re f
+0.350 g 459.68 567.16 10.97 0.13 re f
+0.350 g 472.15 567.16 10.97 0.26 re f
+0.350 g 484.62 567.16 10.97 0.13 re f
+0.350 g 497.10 567.16 10.97 0.26 re f
+0.350 g 509.57 567.16 10.97 0.00 re f
+0.350 g 522.05 567.16 10.97 0.00 re f
+0.350 g 534.52 567.16 10.97 0.13 re f
+0.100 G 0.6 w 48.00 567.16 m 547.00 567.16 l S
+BT /F1 8 Tf 0.050 g 48.00 555.16 Td (INR 1,322) Tj ET
+BT /F1 8 Tf 0.050 g 511.13 555.16 Td (INR 2,709) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 533.16 Td (Peer cross-check) Tj ET
+BT /F2 8.5 Tf 0.050 g 48.00 517.16 Td (Company) Tj ET
+BT /F2 8.5 Tf 0.050 g 333.89 517.16 Td (P/E) Tj ET
+BT /F2 8.5 Tf 0.050 g 392.44 517.16 Td (EV/EBITDA) Tj ET
+BT /F2 8.5 Tf 0.050 g 508.50 517.16 Td (Price date) Tj ET
+0.820 G 0.6 w 48.00 513.16 m 547.00 513.16 l S
+BT /F1 8.5 Tf 0.050 g 48.00 502.29 Td (Tata Consultancy Services Limited) Tj ET
+BT /F1 8.5 Tf 0.050 g 326.77 502.29 Td (19.4x) Tj ET
+BT /F1 8.5 Tf 0.050 g 416.77 502.29 Td (12.8x) Tj ET
+BT /F1 8.5 Tf 0.050 g 504.09 502.29 Td (2026-11-26) Tj ET
+0.820 G 0.6 w 48.00 498.29 m 547.00 498.29 l S
+BT /F1 8.5 Tf 0.050 g 48.00 487.41 Td (Infosys Limited) Tj ET
+BT /F1 8.5 Tf 0.050 g 326.77 487.41 Td (15.9x) Tj ET
+BT /F1 8.5 Tf 0.050 g 416.77 487.41 Td (10.7x) Tj ET
+BT /F1 8.5 Tf 0.050 g 504.09 487.41 Td (2026-11-26) Tj ET
+0.820 G 0.6 w 48.00 483.41 m 547.00 483.41 l S
+BT /F1 8.5 Tf 0.050 g 48.00 472.54 Td (Wipro Limited) Tj ET
+BT /F1 8.5 Tf 0.050 g 326.77 472.54 Td (14.4x) Tj ET
+BT /F1 8.5 Tf 0.050 g 421.49 472.54 Td (8.8x) Tj ET
+BT /F1 8.5 Tf 0.050 g 504.09 472.54 Td (2026-11-26) Tj ET
+0.820 G 0.6 w 48.00 468.54 m 547.00 468.54 l S
+BT /F1 8.5 Tf 0.050 g 48.00 457.66 Td (HCL Technologies Limited) Tj ET
+BT /F1 8.5 Tf 0.050 g 326.77 457.66 Td (23.2x) Tj ET
+BT /F1 8.5 Tf 0.050 g 421.49 457.66 Td (8.0x) Tj ET
+BT /F1 8.5 Tf 0.050 g 504.09 457.66 Td (2026-11-26) Tj ET
+0.820 G 0.6 w 48.00 453.66 m 547.00 453.66 l S
+BT /F1 8.5 Tf 0.050 g 48.00 442.79 Td (Tech Mahindra Limited) Tj ET
+BT /F1 8.5 Tf 0.050 g 326.77 442.79 Td (33.4x) Tj ET
+BT /F1 8.5 Tf 0.050 g 416.77 442.79 Td (16.7x) Tj ET
+BT /F1 8.5 Tf 0.050 g 504.09 442.79 Td (2026-11-26) Tj ET
+0.820 G 0.6 w 48.00 438.79 m 547.00 438.79 l S
+BT /F2 11 Tf 0.050 g 48.00 423.91 Td () Tj ET
+BT /F1 9 Tf 0.150 g 48.00 408.91 Td (At the peer median P/E of 19.5x a share would be INR 2,659; at the median EV/EBITDA of 9.8x, INR 2,037. Both are above) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 396.49 Td (the DCF value, so the market prices this group on more optimistic assumptions \(or a lower discount rate\) than the model) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 384.07 Td (uses.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 362.65 Td (Validation) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 347.65 Td (A hand-checkable example reproduces to INR 26.8 per share; an exported Excel model with live formulas matches Python) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 335.23 Td (when recalculated by an independent formula engine; property-based tests check that a higher discount rate never raises) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 322.81 Td (value.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 301.39 Td (Limitations) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 286.39 Td (Five-year forecast; most value sits in the terminal value; beta and the equity risk premium are estimates; currency effects) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 273.97 Td (are not modelled; leases are treated as debt, which leaves lease additions outside CapEx and triggers the reinvestment) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 261.55 Td (warning; statements come from Yahoo Finance and some lines are not yet ticked against the annual report.) Tj ET
+BT /F2 11 Tf 0.050 g 48.00 240.13 Td (What I would improve next) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 225.13 Td (Add lease additions to reinvestment, use a longer history, model currency exposure, and read assumptions from the annual) Tj ET
+BT /F1 9 Tf 0.150 g 48.00 212.71 Td (report with page citations.) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000456 00000 n 
+0000006716 00000 n 
+0000006852 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+12776
+%%EOF

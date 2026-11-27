@@ -133,6 +133,7 @@ h2,
 
 input[type="range"] {
   accent-color: var(--series-1);
+  height: 1.5rem; /* comfortable touch target */
 }
 
 :focus-visible {

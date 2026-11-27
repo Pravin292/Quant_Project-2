@@ -47,13 +47,9 @@ Deployed at https://quant-project-2.vercel.app and checked there (see docs/perfo
 
 Notes: F28 rate limit and cache are per server instance. Set `ALLOWED_ORIGINS` only if another origin must call the API. Tickers are limited to committed snapshots.
 
-## Session 3 (in progress)
-| Item | State |
-|---|---|
-| High-fidelity design and 3D (owner request, beyond SPEC) | done: new theme, hero, 3D valuation surface (Summary, Sensitivity), 3D histogram, 3D peer view; flat tables kept for every 3D view |
-| M13 Excel download and ticker field | done; owner to open the file in Excel and confirm live formulas |
-| M14 Monte Carlo tab | done: median within a rupee or two of base, percentile table, caveat |
-| M15 Peers tab | done: implied values, timestamps |
-| M16 ship | next: snapshot Action, README with screenshots and p50/p95, architecture diagram, case study PDF, repo polish, v1.0 |
-| Priority A left | F21 football field, probability editing UI (F26), p50/p95 table (F28) |
-| Priority B / optional | F24 Methodology tab, F25 PDF report, F29 smoke test, M17 AI explainer (needs an LLM API key), Screener upload in the UI |
+## Session 3
+M13 to M16 and F21, F24, F25, F26, F28, F29 are done and live. Open items and owner steps are in
+docs/final_checklist.md. M17 (optional AI explainer) is not started.
+
+The plain redesign is parked on branch `design-v3` (not merged). It predates the Session 3
+features, so merging it will need those new components restyled.
