@@ -20,7 +20,7 @@ Read SPEC.md first. Work one milestone at a time on branch `mNN-name`; merge to 
 | M6 terminal + bridge (F5, F6, F18, F20) | done: Gordon, exit multiple, ROIC check, value-driver TV, reverse DCF, warnings |
 | M7 sensitivity (F7, F22) | done: two grids, tornado, scenarios (F10, F26 weights) |
 | M8 validation (F8, F27) | done: Monte Carlo (F14), peers (F15), Excel export with live formulas (F12), reconciliation, property tests |
-| M9 Vercel spike | code and local measurements done; live URL needs you (see docs/m09-vercel-spike.md) |
+| M9 Vercel spike | done: deployed and measured (docs/m09-vercel-spike.md) |
 
 ## Decisions made in Session 1 (all documented in code and docs)
 * EBIT = "Operating Income" (before treasury other income; cash goes in the bridge). Leases are debt in the bridge.
@@ -36,5 +36,14 @@ Read SPEC.md first. Work one milestone at a time on branch `mNN-name`; merge to 
 * TCS default valuation flags the ROIC reinvestment warning (lease amortisation inside D&A but lease additions outside CapEx). See docs/verification.md.
 * Live-quote endpoint (Yahoo chart API) is unofficial; fallback to the snapshot price exists.
 
-## Next: Session 2
-M10 API (all endpoints: historical, valuation, sensitivity, scenarios, montecarlo, peers, export, plus reverse DCF, tornado, beta), M11 Next.js shell, M12 scenarios and charts, F22 tornado chart, F23 shareable link, F28 backend (cache, logs, rate limit), Vercel deploy.
+## Session 2
+| Item | State |
+|---|---|
+| M10 API | done: all endpoints, strict models, 422/503 errors, CORS, size and rate limits, cache, JSON logs |
+| M11 frontend shell | done: inputs panel (drawer on phones), Summary, Historical, Forecast tabs, typed client |
+| M12 scenarios and charts | done: scenario switch, FCFF chart, waterfall, two heatmaps, tornado (F22), share link (F23) |
+
+Notes: F28 rate limit and cache are per server instance. Set `ALLOWED_ORIGINS` only if another origin must call the API. Tickers are limited to committed snapshots.
+
+## Next: Session 3
+Monte Carlo, Peers, football field (F21) and Methodology (F24) tabs, reverse DCF and probability editing UI, Excel button (API ready) and PDF report, Screener upload, snapshot GitHub Action, p50/p95 table, Playwright smoke test (F29), case study, architecture diagram, AI explainer (F17), v1.0.

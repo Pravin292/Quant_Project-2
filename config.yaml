@@ -48,3 +48,6 @@ monte_carlo:
 
 api:
   max_request_bytes: 100000
+  rate_limit_per_minute: 120 # per client, per server instance
+  result_cache_entries: 256
+  price_cache_seconds: 300
