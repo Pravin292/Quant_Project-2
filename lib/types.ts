@@ -146,6 +146,43 @@ export interface Tornado {
   }[];
 }
 
+export interface MonteCarlo {
+  runs: number;
+  seed: number;
+  discarded_draws: number;
+  base_fair_value: number;
+  mean: number;
+  std: number;
+  percentiles: Record<"p5" | "p25" | "p50" | "p75" | "p95", number>;
+  probability_above_price: number | null;
+  price: number | null;
+  histogram: { counts: number[]; edges: number[] };
+  ranges: Record<"growth_swing" | "margin_swing" | "wacc_sd" | "terminal_growth_swing", number>;
+  caveat: string;
+}
+
+export interface Multiples {
+  ticker: string;
+  name: string;
+  price: number | null;
+  market_cap: number;
+  pe: number | null;
+  ev_ebitda: number | null;
+  fiscal_year: string;
+  price_date: string | null;
+  fetched_at: string;
+}
+
+export interface Peers {
+  subject: Multiples;
+  peers: Multiples[];
+  median_pe: number | null;
+  median_ev_ebitda: number | null;
+  value_per_share_at_median_pe: number | null;
+  value_per_share_at_median_ev_ebitda: number | null;
+  note: string;
+}
+
 export interface ReverseDcf {
   status: string;
   implied_growth: number | null;

@@ -4,6 +4,7 @@ import { useApi } from "@/lib/api";
 import { pct, rupees } from "@/lib/format";
 import type { Assumptions, Grid, Sensitivity, Tornado } from "@/lib/types";
 import { TornadoChart } from "./charts";
+import SurfaceCard from "./SurfaceCard";
 import { Card, Notice, Skeleton, Table } from "./ui";
 
 /** Blue above the market price, orange below, stronger the further away (full at 50%). */
@@ -66,6 +67,7 @@ export default function SensitivityTab({ assumptions }: { assumptions: Assumptio
   const note = `Fair value per share. Blue is above the market price of ${rupees(price)}, orange below. The outlined cell is the current case; a dash means growth is not below WACC.`;
   return (
     <div className={`space-y-4 ${grids.loading || tornado.loading ? "opacity-60" : ""}`}>
+      <SurfaceCard assumptions={assumptions} height={480} />
       <div className="grid gap-4 2xl:grid-cols-2">
         <Card title="WACC × terminal growth" note={note}>
           <Heatmap grid={grids.data.wacc_growth} price={price} />

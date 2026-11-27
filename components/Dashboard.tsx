@@ -2,19 +2,22 @@
 
 import { useEffect, useState } from "react";
 
-import { useApi, useDebounced } from "@/lib/api";
+import { download, useApi, useDebounced } from "@/lib/api";
 import { day, rupees } from "@/lib/format";
 import { decodeShare, encodeShare, matchesDefaults, type Shared } from "@/lib/share";
 import type { Assumptions, Defaults, ScenarioName, Scenarios, Valuation } from "@/lib/types";
 import BridgeTab from "./BridgeTab";
 import ForecastTab from "./ForecastTab";
+import Hero from "./Hero";
 import HistoricalTab from "./HistoricalTab";
 import InputsPanel from "./InputsPanel";
+import MonteCarloTab from "./MonteCarloTab";
+import PeersTab from "./PeersTab";
 import SensitivityTab from "./SensitivityTab";
 import SummaryTab from "./SummaryTab";
 import { Notice, Skeleton } from "./ui";
 
-const TABS = ["Summary", "Historical", "Forecast", "Valuation bridge", "Sensitivity"] as const;
+const TABS = ["Summary", "Historical", "Forecast", "Valuation bridge", "Sensitivity", "Monte Carlo", "Peers"] as const;
 type Tab = (typeof TABS)[number];
 
 const DEFAULT_TICKER = "TCS.NS";
@@ -48,8 +51,8 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-[1500px] px-4 pb-16">
-      <header className="py-4">
-        <h1 className="text-xl font-semibold">{ready?.company.name ?? "TCS"}: DCF valuation</h1>
+      <header className="py-6">
+        <h1 className="text-2xl font-semibold sm:text-3xl">{ready?.company.name ?? "TCS"}: DCF valuation</h1>
         <p className="text-sm text-(--ink-2)">
           Five-year discounted cash flow model. Move any assumption and the value updates.
           {ready && ` Statements fetched ${day(ready.company.fetched_at)}.`}
@@ -130,6 +133,19 @@ function Model({
     setTimeout(() => setCopied(null), 3000);
   };
 
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const excel = async () => {
+    setExporting(true);
+    setExportError(null);
+    try {
+      await download("/api/export", { assumptions: lastActive }, "dcf_model.xlsx");
+    } catch (e) {
+      setExportError((e as Error).message);
+    }
+    setExporting(false);
+  };
+
   const error = valuation.error ?? scenarios.error;
   const v = valuation.data;
   const busy = valuation.loading || scenarios.loading;
@@ -145,7 +161,7 @@ function Model({
         >
           {drawer ? "Hide assumptions" : "Edit assumptions"}
         </button>
-        <div className={`${drawer ? "block" : "hidden"} mt-2 rounded-lg border border-(--line) bg-(--surface) p-4 lg:sticky lg:top-2 lg:mt-0 lg:block lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto`}>
+        <div className={`${drawer ? "block" : "hidden"} panel mt-2 p-5 lg:sticky lg:top-2 lg:mt-0 lg:block lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto`}>
           <InputsPanel
             defaults={defaults}
             assumptions={assumptions}
@@ -170,18 +186,25 @@ function Model({
             Custom assumptions are in this page&apos;s link, including the share price of {rupees(assumptions.bridge.price)}.
           </p>
         )}
-        <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page) px-4 py-2 lg:mx-0 lg:px-0">
+        <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page) px-4 py-2 lg:mx-0 lg:rounded-2xl lg:border">
           <div aria-live="polite" className="text-sm">
             Fair value <strong data-testid="fair-value">{rupees(v?.fair_value_per_share)}</strong> vs price{" "}
             {rupees(v?.price)}
             <span className="ml-2 text-(--ink-2)">{busy ? "updating…" : error ? "not updated" : ""}</span>
           </div>
-          <button type="button" onClick={share} className="ml-auto rounded border border-(--line) bg-(--surface) px-3 py-1 text-sm">
-            {copied ?? "Share link"}
-          </button>
+          <span className="ml-auto flex gap-2">
+            <button type="button" onClick={excel} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
+              {exporting ? "Preparing…" : "Download Excel"}
+            </button>
+            <button type="button" onClick={share} className="chip chip-solid">
+              {copied ?? "Share link"}
+            </button>
+          </span>
         </div>
         {error && <Notice kind="error">{error}</Notice>}
-        <div role="tablist" aria-label="Outputs" className="flex gap-1 overflow-x-auto border-b border-(--line)">
+        {exportError && <Notice kind="error">{exportError}</Notice>}
+        {v && <Hero defaults={defaults} valuation={v} scenario={scenario} />}
+        <div role="tablist" aria-label="Outputs" className="flex gap-2 overflow-x-auto py-1">
           {TABS.map((t) => (
             <button
               key={t}
@@ -189,7 +212,7 @@ function Model({
               role="tab"
               aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`border-b-2 px-3 py-2 text-sm whitespace-nowrap ${tab === t ? "border-(--series-1) font-semibold" : "border-transparent text-(--ink-2)"}`}
+              className={`chip whitespace-nowrap ${tab === t ? "chip-solid font-semibold" : "text-(--ink-2)"}`}
             >
               {t}
             </button>
@@ -201,11 +224,15 @@ function Model({
           ) : !v ? (
             error ? null : <Skeleton />
           ) : tab === "Summary" ? (
-            <SummaryTab defaults={defaults} assumptions={lastActive} valuation={v} scenarios={scenarios.data} scenario={scenario} />
+            <SummaryTab assumptions={lastActive} valuation={v} scenarios={scenarios.data} />
           ) : tab === "Forecast" ? (
             <ForecastTab assumptions={assumptions} valuation={v} onChange={setAssumptions} />
           ) : tab === "Valuation bridge" ? (
             <BridgeTab defaults={defaults} valuation={v} shares={lastActive.bridge.diluted_shares} />
+          ) : tab === "Monte Carlo" ? (
+            <MonteCarloTab assumptions={lastActive} />
+          ) : tab === "Peers" ? (
+            <PeersTab ticker={defaults.company.ticker} fairValue={v.fair_value_per_share} price={v.price} />
           ) : (
             <SensitivityTab assumptions={lastActive} />
           )}

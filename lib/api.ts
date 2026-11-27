@@ -76,3 +76,23 @@ export function useDebounced<T>(value: T, ms = 350): T {
   }, [value, ms]);
   return settled;
 }
+
+/** POST and save the returned file (the Excel export). */
+export async function download(path: string, body: unknown, fallbackName: string): Promise<void> {
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null);
+    throw new Error(payload?.error?.message ?? "The file could not be created.");
+  }
+  const named = /filename="([^"]+)"/.exec(response.headers.get("content-disposition") ?? "");
+  const url = URL.createObjectURL(await response.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = named?.[1] ?? fallbackName;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}

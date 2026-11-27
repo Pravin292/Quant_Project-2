@@ -105,6 +105,15 @@ def test_analysis_endpoints() -> None:
     assert rev["status"] == "solved"
 
 
+def test_surface_centre_is_the_base_case() -> None:
+    a = tcs()
+    base = client.post("/api/valuation", json=a).json()["fair_value_per_share"]
+    grid = client.post("/api/surface", json=a).json()
+    row, col = grid["centre"]
+    assert (len(grid["rows"]), len(grid["columns"])) == (17, 25)
+    assert grid["values"][row][col] == pytest.approx(base)
+
+
 def test_export_returns_workbook() -> None:
     r = client.post("/api/export", json={"assumptions": tcs()})
     assert r.status_code == 200

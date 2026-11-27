@@ -2,15 +2,21 @@
 
 :root {
   color-scheme: light;
-  --page: #f4f4f1;
-  --surface: #fcfcfb;
-  --ink: #0b0b0b;
-  --ink-2: #52514e;
-  --line: #dddcd6;
+  --page: #eef1f8;
+  --surface: #ffffff;
+  --surface-solid: #ffffff;
+  --glass: rgb(255 255 255 / 0.78);
+  --ink: #0c1020;
+  --ink-2: #4c5369;
+  --line: #dbe0ec;
+  --glow-1: rgb(42 120 214 / 0.22);
+  --glow-2: rgb(27 175 122 / 0.14);
+  --stage-1: #ffffff;
+  --stage-2: #e4e9f5;
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
-  --neutral: #8a8983;
+  --neutral: #8b90a0;
   --warn-bg: #fff4d6;
   --warn-line: #d99a00;
   --error-bg: #fde8e8;
@@ -20,26 +26,109 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --page: #111110;
-    --surface: #1a1a19;
-    --ink: #f0efec;
-    --ink-2: #c3c2b7;
-    --line: #383835;
+    --page: #070a14;
+    --surface: #111729;
+    --surface-solid: #111729;
+    --glass: rgb(20 27 48 / 0.66);
+    --ink: #eef1f8;
+    --ink-2: #a8b0c8;
+    --line: #28314d;
+    --glow-1: rgb(57 135 229 / 0.28);
+    --glow-2: rgb(25 158 112 / 0.18);
+    --stage-1: #182142;
+    --stage-2: #0a0e1c;
     --series-1: #3987e5;
     --series-2: #d95926;
     --series-3: #199e70;
-    --neutral: #8f8e87;
-    --warn-bg: #3a2f10;
+    --neutral: #858ca3;
+    --warn-bg: #2e2712;
     --warn-line: #c98500;
-    --error-bg: #3d1b1b;
+    --error-bg: #35171d;
     --error-line: #e66767;
   }
 }
 
+@theme inline {
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-heading), var(--font-body), system-ui, sans-serif;
+}
+
 body {
-  background: var(--page);
+  background:
+    radial-gradient(60rem 32rem at 8% -6%, var(--glow-1), transparent 70%),
+    radial-gradient(48rem 28rem at 100% 4%, var(--glow-2), transparent 70%), var(--page);
+  background-attachment: fixed;
   color: var(--ink);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1,
+h2,
+.display {
+  font-family: var(--font-heading), var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.04) inset,
+    0 18px 40px -28px rgb(6 10 30 / 0.55);
+}
+
+.stage {
+  background: radial-gradient(120% 100% at 50% 0%, var(--stage-1), var(--stage-2));
+  border: 1px solid var(--line);
+  cursor: grab;
+}
+
+.stage:active {
+  cursor: grabbing;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--series-1);
+  transform: translateY(-1px);
+}
+
+.chip[aria-pressed="true"],
+.chip-solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface-solid);
+}
+
+.rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(10px); /* movement only: content is never invisible */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+  .chip {
+    transition: none;
+  }
 }
 
 input[type="range"] {

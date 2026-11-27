@@ -196,6 +196,23 @@ def post_sensitivity(body: schemas.Assumptions, response: Response) -> Any:
     return _cached(response, "sensitivity:" + body.model_dump_json(), compute)
 
 
+# Finer steps than the tables, for the 3D surface: WACC +/-3 points, growth +/-2 points.
+_SURFACE_WACC = tuple(i * 0.0025 for i in range(-12, 13))
+_SURFACE_GROWTH = tuple(i * 0.0025 for i in range(-8, 9))
+
+
+@app.post("/api/surface")
+def post_surface(body: schemas.Assumptions, response: Response) -> Any:
+    """Fair value over a fine WACC x terminal growth mesh."""
+
+    def compute() -> dict[str, Any]:
+        inputs = _checked(body)
+        valuation.run_valuation(inputs)
+        return sensitivity.wacc_growth_grid(inputs, _SURFACE_WACC, _SURFACE_GROWTH)
+
+    return _cached(response, "surface:" + body.model_dump_json(), compute)
+
+
 @app.post("/api/tornado")
 def post_tornado(body: schemas.TornadoRequest, response: Response) -> Any:
     def compute() -> dict[str, Any]:

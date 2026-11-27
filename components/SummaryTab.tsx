@@ -1,48 +1,25 @@
 "use client";
 
 import { useApi } from "@/lib/api";
-import { crore, day, pct, rupees, signedPct } from "@/lib/format";
-import type { Assumptions, Defaults, ReverseDcf, ScenarioName, Scenarios, Valuation } from "@/lib/types";
-import { Card, Notice, Stat, Table } from "./ui";
+import { crore, pct, rupees, signedPct } from "@/lib/format";
+import type { Assumptions, ReverseDcf, Scenarios, Valuation } from "@/lib/types";
+import SurfaceCard from "./SurfaceCard";
+import { Card, Notice, Table } from "./ui";
 
 export default function SummaryTab({
-  defaults,
   assumptions,
   valuation: v,
   scenarios,
-  scenario,
 }: {
-  defaults: Defaults;
   assumptions: Assumptions;
   valuation: Valuation;
   scenarios: Scenarios | null;
-  scenario: ScenarioName;
 }) {
   const reverse = useApi<ReverseDcf>("/api/reverse-dcf", { assumptions });
-  const price = defaults.price;
-  const above = v.upside !== null && v.upside >= 0;
   const op = assumptions.operating;
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Stat
-          label="Model fair value per share"
-          value={rupees(v.fair_value_per_share)}
-          sub={`${scenario} case`}
-          source={`Computed from the assumptions shown. ${defaults.sources.bridge}`}
-        />
-        <Stat
-          label="Market price per share"
-          value={rupees(v.price)}
-          sub={`${price.fallback ? "Saved" : "Live"} quote, ${day(price.as_of)}`}
-          source={`${price.source}; ${price.as_of}`}
-        />
-        <Stat
-          label="Upside / downside"
-          value={signedPct(v.upside)}
-          sub={v.upside === null ? undefined : `Model value ${above ? "above" : "below"} market price`}
-        />
-      </div>
+      <SurfaceCard assumptions={assumptions} />
 
       {v.warnings.length > 0 && (
         <div className="space-y-2">
