@@ -42,7 +42,11 @@ def main() -> int:
     failures = 0
     for ticker in tickers:
         try:
-            raw = loader.fetch_yfinance(ticker, index_ticker)
+            try:
+                last = loader.load_snapshot(ticker, out_dir)
+            except DataUnavailableError:
+                last = None
+            raw = loader.fetch_yfinance(ticker, index_ticker, loader.info_fallback(last))
             snap = loader.build_snapshot(
                 ticker, raw, fy_end_month=cfg["company"]["fiscal_year_end_month"]
             )

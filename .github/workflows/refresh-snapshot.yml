@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [".github/workflows/refresh-snapshot.yml"] # run once when this file changes
+    paths: [".github/workflows/refresh-snapshot.yml"] # also runs once whenever this workflow is edited
 
 permissions:
   contents: write

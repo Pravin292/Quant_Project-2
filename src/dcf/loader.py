@@ -125,7 +125,40 @@ def _find_column(df: pd.DataFrame | None, period_end: Any) -> Any:
 # ---------------------------------------------------------------------------
 # Fetching (network). Isolated so tests can inject fakes.
 # ---------------------------------------------------------------------------
-def fetch_yfinance(ticker: str, index_ticker: str = "^NSEI") -> dict[str, Any]:
+def info_fallback(previous: Snapshot | None) -> dict[str, Any]:
+    """Slow-changing company facts from the last snapshot, for when Yahoo omits them."""
+    if not previous:
+        return {}
+    facts = {
+        "longName": previous.get("name"),
+        "financialCurrency": previous.get("financial_currency"),
+        "sharesOutstanding": previous.get("market", {}).get("shares_outstanding"),
+    }
+    return {k: v for k, v in facts.items() if v}
+
+
+def _market_cap(raw: dict[str, Any]) -> tuple[float | None, str | None]:
+    """Market value in rupees: Yahoo's figure, else latest close x shares outstanding.
+
+    Yahoo often leaves company facts out for requests from cloud servers.
+    """
+    info = raw.get("info") or {}
+    stated = _clean(info.get("marketCap"))
+    if stated is not None:
+        return stated, "yfinance market capitalisation"
+    shares = _clean(info.get("sharesOutstanding"))
+    daily = raw.get("daily_1y")
+    if shares is None or daily is None or daily.empty:
+        return None, None
+    close = _clean(daily["Close"].dropna().iloc[-1])
+    if close is None:
+        return None, None
+    return close * shares, "latest close x shares outstanding (Yahoo gave no market value)"
+
+
+def fetch_yfinance(
+    ticker: str, index_ticker: str = "^NSEI", fallback_info: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Fetch raw statements, price history and market data for one ticker from yfinance."""
     import yfinance as yf  # local import: keeps module import light for the API
 
@@ -138,7 +171,10 @@ def fetch_yfinance(ticker: str, index_ticker: str = "^NSEI") -> dict[str, Any]:
             "daily_1y": t.history(period="1y", interval="1d"),
             "weekly_5y": t.history(period="5y", interval="1wk"),
             "index_weekly_5y": yf.Ticker(index_ticker).history(period="5y", interval="1wk"),
-            "info": dict(t.info or {}),
+            "info": {
+                **(fallback_info or {}),
+                **{k: v for k, v in dict(t.info or {}).items() if v is not None},
+            },
             "index_ticker": index_ticker,
         }
         currency = str(raw["info"].get("financialCurrency") or "INR").upper()
@@ -308,6 +344,13 @@ def build_snapshot(
     # Market data and price history for beta
     market, weekly = _market_and_prices(raw, now)
 
+    if market["market_cap_crore"] is None and market.get("price"):
+        diluted = next(
+            (v for fy in reversed(fiscal_years) if (v := shares["diluted_average"].get(fy))), None
+        )
+        if diluted:
+            market["market_cap_crore"] = market["price"] * diluted / CRORE
+            market["market_cap_source"] = "latest close x diluted average shares"
     snap: Snapshot = {
         "schema_version": SCHEMA_VERSION,
         "ticker": ticker,
@@ -347,7 +390,7 @@ def _effective_currency(
     if label == "INR":
         return "INR"
     ni, _ = _pick(income, YF_INCOME["net_income"], last_col)
-    mcap = _clean((raw.get("info") or {}).get("marketCap"))
+    mcap, _ = _market_cap(raw)
     if ni and ni > 0 and mcap and 3 <= mcap / ni <= 150:
         provenance["fx"] = (
             f"Yahoo labels the statements {label} but market cap / net income "
@@ -405,8 +448,9 @@ def _market_and_prices(raw: dict[str, Any], now: datetime) -> tuple[dict[str, An
         market["price"] = _clean(info.get("currentPrice") or info.get("regularMarketPrice"))
         market["price_date"] = now.date().isoformat()
     market["shares_outstanding"] = _clean(info.get("sharesOutstanding"))
-    mc = _clean(info.get("marketCap"))
+    mc, how = _market_cap(raw)
     market["market_cap_crore"] = mc / CRORE if mc is not None else None
+    market["market_cap_source"] = how
 
     weekly: dict[str, Any] = {
         "dates": [],

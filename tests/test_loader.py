@@ -182,3 +182,22 @@ def test_prune_keeps_the_newest_snapshots(tmp_path: Path) -> None:
     assert len(list(tmp_path.glob("*.json"))) == 3
     with pytest.raises(ValueError):
         loader.prune_snapshots("TCS.NS", tmp_path, keep=0)
+
+
+def test_market_value_is_derived_when_yahoo_omits_it() -> None:
+    raw = fake_raw()
+    raw["info"] = {"sharesOutstanding": 100e6}
+    snap = loader.build_snapshot("T", raw)
+    assert snap["market"]["market_cap_crore"] == pytest.approx(1000 * 100e6 / 1e7)
+    assert "close x shares" in snap["market"]["market_cap_source"]
+    raw["info"] = {}  # nothing at all: use the statements' diluted share count
+    snap = loader.build_snapshot("T", raw)
+    assert snap["market"]["market_cap_crore"] == pytest.approx(1000 * 100e6 / 1e7)
+    assert "diluted" in snap["market"]["market_cap_source"]
+
+
+def test_info_fallback_keeps_slow_changing_facts() -> None:
+    previous = loader.build_snapshot("T", fake_raw())
+    facts = loader.info_fallback(previous)
+    assert facts == {"longName": "Test Co", "financialCurrency": "INR", "sharesOutstanding": 100e6}
+    assert loader.info_fallback(None) == {}
