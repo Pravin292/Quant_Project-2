@@ -48,6 +48,7 @@ def build_defaults(
     peer_snaps: list[Snapshot] | None = None,
     peers_dir: str | Path | None = None,
     price: float | None = None,
+    assumed_beta: float | None = None,
 ) -> DefaultBundle:
     """Default inputs for ``snap``. ``price`` overrides the snapshot price (live quote)."""
     cfg = load_config()
@@ -62,7 +63,7 @@ def build_defaults(
                 f"Cannot derive a default for '{key}' from the data; upload more history."
             )
 
-    wacc_in, beta = default_wacc_inputs(snap)
+    wacc_in, beta = default_wacc_inputs(snap, assumed_beta)
     wacc = compute_wacc(wacc_in).wacc
 
     g_term = min(

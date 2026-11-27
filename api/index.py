@@ -30,6 +30,7 @@ from dcf import (  # noqa: E402
     export,
     montecarlo,
     peers,
+    report,
     scenarios,
     sensitivity,
     valuation,
@@ -275,3 +276,33 @@ def post_export(body: schemas.ExportRequest) -> Response:
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{stem}_dcf.xlsx"'},
     )
+
+
+@app.post("/api/report")
+def post_report(body: schemas.ReportRequest) -> Response:
+    """The two-page PDF report (F25)."""
+    a = body.assumptions
+    inputs = _checked(a)
+    company = service.company(a.ticker) if a.ticker else {"name": "Uploaded data", "ticker": ""}
+    sources = service.default_bundle(a.ticker)["sources"] if a.ticker else inputs.wacc.sources
+    data = report.build_report(
+        inputs,
+        service.scenario_specs(a.ticker),
+        {**company, "sources": sources},
+        body.probabilities,
+    )
+    stem = "".join(c for c in (a.ticker or "model") if c.isalnum() or c in "._-")
+    return Response(
+        data,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{stem}_report.pdf"'},
+    )
+
+
+@app.post("/api/upload")
+async def post_upload(request: Request) -> Any:
+    """Defaults from an uploaded Screener.in Excel export (raw file as the request body).
+
+    The file is parsed in memory and never stored.
+    """
+    return service.jsonable(service.upload_bundle(await request.body()))

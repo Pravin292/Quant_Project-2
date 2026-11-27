@@ -60,6 +60,9 @@ export interface Defaults {
   tickers: string[];
 }
 
+/** /api/upload returns the defaults plus the history parsed from the file. */
+export type Uploaded = Defaults & { historical: Pick<Historical, "years" | "sources"> };
+
 export interface Valuation {
   forecast: {
     base_revenue: number;
@@ -97,6 +100,8 @@ export interface Valuation {
   value_driver_cross_check: { fair_value_per_share: number } | null;
   warnings: { code: string; severity: string; message: string }[];
 }
+
+export type Probabilities = Record<ScenarioName, number>;
 
 export interface Scenarios {
   scenarios: Record<
@@ -180,6 +185,8 @@ export interface Peers {
   median_ev_ebitda: number | null;
   value_per_share_at_median_pe: number | null;
   value_per_share_at_median_ev_ebitda: number | null;
+  value_range_pe: [number, number] | null;
+  value_range_ev_ebitda: [number, number] | null;
   note: string;
 }
 

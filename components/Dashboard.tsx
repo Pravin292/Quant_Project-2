@@ -2,25 +2,27 @@
 
 import { useEffect, useState } from "react";
 
-import { download, useApi, useDebounced } from "@/lib/api";
+import { download, upload, useApi, useDebounced } from "@/lib/api";
 import { day, rupees } from "@/lib/format";
 import { decodeShare, encodeShare, matchesDefaults, type Shared } from "@/lib/share";
-import type { Assumptions, Defaults, ScenarioName, Scenarios, Valuation } from "@/lib/types";
+import type { Assumptions, Defaults, Probabilities, ScenarioName, Scenarios, Uploaded, Valuation } from "@/lib/types";
 import BridgeTab from "./BridgeTab";
 import ForecastTab from "./ForecastTab";
 import Hero from "./Hero";
 import HistoricalTab from "./HistoricalTab";
 import InputsPanel from "./InputsPanel";
+import MethodologyTab from "./MethodologyTab";
 import MonteCarloTab from "./MonteCarloTab";
 import PeersTab from "./PeersTab";
 import SensitivityTab from "./SensitivityTab";
 import SummaryTab from "./SummaryTab";
 import { Notice, Skeleton } from "./ui";
 
-const TABS = ["Summary", "Historical", "Forecast", "Valuation bridge", "Sensitivity", "Monte Carlo", "Peers"] as const;
+const TABS = ["Summary", "Historical", "Forecast", "Valuation bridge", "Sensitivity", "Monte Carlo", "Peers", "Methodology"] as const;
 type Tab = (typeof TABS)[number];
 
 const DEFAULT_TICKER = "TCS.NS";
+const DEFAULT_PROBABILITIES: Probabilities = { bear: 0.25, base: 0.5, bull: 0.25 };
 const readHash = () =>
   typeof window === "undefined" ? null : decodeShare(window.location.hash.replace(/^#s=/, ""));
 
@@ -44,10 +46,12 @@ export default function Dashboard() {
     };
   }, []);
 
+  const [uploaded, setUploaded] = useState<Uploaded | null>(null);
   const defaults = useApi<Defaults>(
     start ? `/api/defaults?ticker=${encodeURIComponent(start.ticker)}` : null,
   );
-  const ready = defaults.data && defaults.data.company.ticker === start?.ticker ? defaults.data : null;
+  const fetched = defaults.data && defaults.data.company.ticker === start?.ticker ? defaults.data : null;
+  const ready: Defaults | null = uploaded ?? fetched;
 
   return (
     <div className="mx-auto max-w-[1500px] px-4 pb-16">
@@ -62,11 +66,18 @@ export default function Dashboard() {
         <Notice kind="error">{defaults.error} Reload the page to try again.</Notice>
       ) : ready && start ? (
         <Model
-          key={`${ready.company.ticker} ${start.link ? encodeShare({ assumptions: start.link.a, scenario: start.link.s }) : ""}`}
+          key={`${ready.company.ticker} ${ready.company.fetched_at} ${start.link ? encodeShare({ assumptions: start.link.a, scenario: start.link.s }) : ""}`}
           defaults={ready}
-          link={start.link}
-          broken={start.broken}
+          uploaded={uploaded}
+          link={uploaded ? null : start.link}
+          broken={start.broken && !uploaded}
+          onUpload={async (file) => {
+            const data = await upload<Uploaded>("/api/upload", file);
+            window.history.replaceState(null, "", window.location.pathname);
+            setUploaded(data);
+          }}
           onTicker={(ticker) => {
+            setUploaded(null);
             window.history.replaceState(null, "", window.location.pathname);
             setStart({ ticker, link: null, broken: false });
           }}
@@ -86,11 +97,15 @@ function Model({
   link,
   broken,
   onTicker,
+  uploaded,
+  onUpload,
 }: {
   defaults: Defaults;
   link: ReturnType<typeof readHash>;
   broken: boolean;
   onTicker: (ticker: string) => void;
+  uploaded: Uploaded | null;
+  onUpload: (file: File) => Promise<void>;
 }) {
   const usable = link !== null && matchesDefaults(link.a, defaults.assumptions);
   const initial: Shared = usable
@@ -103,11 +118,12 @@ function Model({
   const [assumptions, setAssumptions] = useState<Assumptions>(initial.assumptions);
   const [scenario, setScenario] = useState<ScenarioName>(initial.scenario);
   const [tab, setTab] = useState<Tab>("Summary");
+  const [probabilities, setProbabilities] = useState((usable && link.p) || DEFAULT_PROBABILITIES);
   const [drawer, setDrawer] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
   const base = useDebounced(assumptions);
-  const scenarios = useApi<Scenarios>("/api/scenarios", { assumptions: base });
+  const scenarios = useApi<Scenarios>("/api/scenarios", { assumptions: base, probabilities });
   const scenarioInputs = scenarios.loading ? null : (scenarios.data?.scenarios[scenario].assumptions ?? null);
   const active = scenario === "base" ? base : scenarioInputs;
   const [lastActive, setLastActive] = useState<Assumptions>(base);
@@ -116,14 +132,15 @@ function Model({
   }
   const valuation = useApi<Valuation>("/api/valuation", lastActive);
 
-  const changed = scenario !== "base" || JSON.stringify(assumptions) !== JSON.stringify(defaults.assumptions);
-  const hash = changed ? `#s=${encodeShare({ assumptions: base, scenario })}` : "";
+  const weighted = JSON.stringify(probabilities) === JSON.stringify(DEFAULT_PROBABILITIES) ? undefined : probabilities;
+  const changed = weighted !== undefined || scenario !== "base" || JSON.stringify(assumptions) !== JSON.stringify(defaults.assumptions);
+  const hash = changed && !uploaded ? `#s=${encodeShare({ assumptions: base, scenario, probabilities: weighted })}` : "";
   useEffect(() => {
     window.history.replaceState(null, "", `${window.location.pathname}${hash}`);
   }, [hash]);
 
   const share = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#s=${encodeShare({ assumptions, scenario })}`;
+    const url = `${window.location.origin}${window.location.pathname}#s=${encodeShare({ assumptions, scenario, probabilities: weighted })}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopied("Link copied");
@@ -135,11 +152,11 @@ function Model({
 
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
-  const excel = async () => {
+  const save = async (path: string, body: unknown, name: string) => {
     setExporting(true);
     setExportError(null);
     try {
-      await download("/api/export", { assumptions: lastActive }, "dcf_model.xlsx");
+      await download(path, body, name);
     } catch (e) {
       setExportError((e as Error).message);
     }
@@ -169,9 +186,11 @@ function Model({
             onChange={setAssumptions}
             onScenario={setScenario}
             onTicker={onTicker}
+            onUpload={onUpload}
             onReset={() => {
               setAssumptions(defaults.assumptions);
               setScenario("base");
+              setProbabilities(DEFAULT_PROBABILITIES);
             }}
           />
         </div>
@@ -193,16 +212,27 @@ function Model({
             <span className="ml-2 text-(--ink-2)">{busy ? "updating…" : error ? "not updated" : ""}</span>
           </div>
           <span className="ml-auto flex gap-2">
-            <button type="button" onClick={excel} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
+            <button type="button" onClick={() => save("/api/export", { assumptions: lastActive }, "dcf_model.xlsx")} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
               {exporting ? "Preparing…" : "Download Excel"}
             </button>
-            <button type="button" onClick={share} className="chip chip-solid">
+            <button type="button" onClick={() => save("/api/report", { assumptions: lastActive, probabilities }, "dcf_report.pdf")} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
+              Download report
+            </button>
+            {!uploaded && (
+              <button type="button" onClick={share} className="chip chip-solid">
               {copied ?? "Share link"}
             </button>
+            )}
           </span>
         </div>
         {error && <Notice kind="error">{error}</Notice>}
         {exportError && <Notice kind="error">{exportError}</Notice>}
+        {uploaded && (
+          <Notice kind="warn">
+            Uploaded data: {uploaded.company.quality_warnings.join(" ")} Beta starts at 1, and scenario and Monte Carlo
+            ranges are borrowed from {"TCS"}.
+          </Notice>
+        )}
         {v && <Hero defaults={defaults} valuation={v} scenario={scenario} />}
         <div role="tablist" aria-label="Outputs" className="flex gap-2 overflow-x-auto py-1">
           {TABS.map((t) => (
@@ -220,19 +250,33 @@ function Model({
         </div>
         <div role="tabpanel" aria-label={tab} className={error ? "opacity-50" : ""}>
           {tab === "Historical" ? (
-            <HistoricalTab ticker={defaults.company.ticker} />
+            <HistoricalTab company={defaults.company} uploaded={uploaded?.historical ?? null} />
           ) : !v ? (
             error ? null : <Skeleton />
           ) : tab === "Summary" ? (
-            <SummaryTab assumptions={lastActive} valuation={v} scenarios={scenarios.data} />
+            <SummaryTab
+              assumptions={lastActive}
+              valuation={v}
+              scenarios={scenarios.data}
+              probabilities={probabilities}
+              onProbabilities={setProbabilities}
+              week52={defaults.week_52}
+              ticker={uploaded ? null : defaults.company.ticker}
+            />
           ) : tab === "Forecast" ? (
             <ForecastTab assumptions={assumptions} valuation={v} onChange={setAssumptions} />
           ) : tab === "Valuation bridge" ? (
             <BridgeTab defaults={defaults} valuation={v} shares={lastActive.bridge.diluted_shares} />
+          ) : tab === "Methodology" ? (
+            <MethodologyTab defaults={defaults} />
           ) : tab === "Monte Carlo" ? (
             <MonteCarloTab assumptions={lastActive} />
           ) : tab === "Peers" ? (
-            <PeersTab ticker={defaults.company.ticker} fairValue={v.fair_value_per_share} price={v.price} />
+            uploaded ? (
+              <Notice kind="warn">The peer table compares listed companies; choose a ticker to see it.</Notice>
+            ) : (
+              <PeersTab ticker={defaults.company.ticker} fairValue={v.fair_value_per_share} price={v.price} />
+            )
           ) : (
             <SensitivityTab assumptions={lastActive} />
           )}

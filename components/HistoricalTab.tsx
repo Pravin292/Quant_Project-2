@@ -2,15 +2,22 @@
 
 import { useApi } from "@/lib/api";
 import { day, num, pct } from "@/lib/format";
-import type { Historical } from "@/lib/types";
+import type { Company, Historical } from "@/lib/types";
 import { SeriesChart } from "./charts";
 import { Card, Notice, Skeleton, Table } from "./ui";
 
-export default function HistoricalTab({ ticker }: { ticker: string }) {
-  const query = useApi<Historical>(`/api/historical?ticker=${encodeURIComponent(ticker)}`);
+export default function HistoricalTab({
+  company,
+  uploaded,
+}: {
+  company: Company;
+  uploaded: Pick<Historical, "years"> | null; // history parsed from an Excel upload
+}) {
+  const query = useApi<Historical>(uploaded ? null : `/api/historical?ticker=${encodeURIComponent(company.ticker)}`);
   if (query.error) return <Notice kind="error">{query.error}</Notice>;
-  if (!query.data || query.loading) return <Skeleton />;
-  const { years, company } = query.data;
+  const history = uploaded ?? (query.loading ? null : query.data);
+  if (!history) return <Skeleton />;
+  const { years } = history;
   const data = years as Record<string, string | number | null>[];
   const source = `${company.source}, fetched ${day(company.fetched_at)}`;
   const row = (label: string, key: string, format: (v: unknown) => string) => [
