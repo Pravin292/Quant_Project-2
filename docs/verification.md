@@ -55,6 +55,9 @@ Risk-free 7.38% (FRED, India 10y, Oct 2026) + beta 0.898 x equity risk premium 7
 `export_workbook_bytes()` writes a workbook with live formulas and a Reconciliation sheet. `tests/test_export.py` recalculates it with an independent formula engine and compares every FCFF, the terminal value, EV, equity, fair value and all 50 sensitivity cells: they agree to 1e-12 relative. Open the exported workbook in Excel and look at Reconciliation: it should read ALL MATCH; change any blue cell and the numbers follow.
 
 ## 6. TCS result on the 25 Nov 2026 snapshot (illustrative, not advice)
+
+The data now refreshes daily, so current figures differ; the README has the 27 Nov values.
+
 Model value about INR 1,755 per share against a price of INR 2,460 (-29%). Bear / base / bull: 1,519 / 1,755 / 2,031. Monte Carlo (10,000 runs): 5th to 95th percentile 1,540 to 2,036; the probability the value exceeds the price is under 1%. Peer medians (P/E 19.0, EV/EBITDA 9.6) imply 2,590 and 1,999 per share. The reverse DCF says the price needs about 16.7% revenue growth a year for 5 years. Terminal value is 67% of EV. WACC is the biggest driver (one point moves value by about 392 per share across the +/-1 point range). The ROIC check warns that year-5 reinvestment (0.6% of NOPAT) is far below what 5% growth needs at a 65% ROIC: CapEx (1.4% of revenue) is below D&A (2.1%) because D&A includes lease amortisation while lease additions are not in CapEx. The value-driver terminal value gives 1,673.
 
 These results mostly say the market is pricing in more growth or a lower discount rate than this model assumes. The 13.7% cost of equity (Indian 10y yield 7.38% plus a 7.1% India ERP) is the most debatable input.
