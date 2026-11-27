@@ -37,6 +37,8 @@ Read SPEC.md first. Work one milestone at a time on branch `mNN-name`; merge to 
 * Live-quote endpoint (Yahoo chart API) is unofficial; fallback to the snapshot price exists.
 
 ## Session 2
+Deployed at https://quant-project-2.vercel.app and checked there (see docs/performance.md).
+
 | Item | State |
 |---|---|
 | M10 API | done: all endpoints, strict models, 422/503 errors, CORS, size and rate limits, cache, JSON logs |
