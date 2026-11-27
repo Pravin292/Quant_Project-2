@@ -48,6 +48,7 @@ def main() -> int:
             )
             snap["macro"] = macro
             path = loader.save_snapshot(snap, out_dir)
+            loader.prune_snapshots(ticker, out_dir, cfg["snapshots_to_keep"])
             print(f"saved {path.relative_to(ROOT)} ({len(snap['quality_warnings'])} warnings)")
             if args.show:
                 print(loader.format_tables(snap))

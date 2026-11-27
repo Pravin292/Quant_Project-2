@@ -508,6 +508,16 @@ def load_snapshot(ticker: str, directory: str | Path) -> Snapshot:
     return snap
 
 
+def prune_snapshots(ticker: str, directory: str | Path, keep: int) -> list[Path]:
+    """Delete all but the newest ``keep`` dated snapshots of a ticker."""
+    if keep < 1:
+        raise ValueError("At least one snapshot must be kept.")
+    old = sorted(Path(directory).glob(f"{ticker}_*.json"))[:-keep]
+    for path in old:
+        path.unlink()
+    return old
+
+
 def list_snapshot_tickers(directory: str | Path) -> list[str]:
     return sorted({p.name.rsplit("_", 1)[0] for p in Path(directory).glob("*_*.json")})
 

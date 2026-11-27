@@ -28,3 +28,5 @@ next-env.d.ts
 
 # Local data cache (the dated snapshots in data/snapshots/ are committed on purpose)
 data/cache/
+test-results/
+playwright-report/

@@ -4,3 +4,5 @@ docs
 .github
 *.md
 !README.md
+e2e
+playwright.config.ts

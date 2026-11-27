@@ -14,6 +14,7 @@ paths:
   cache_dir: "data/cache"
 
 peers: ["INFY.NS", "WIPRO.NS", "HCLTECH.NS", "TECHM.NS"]
+snapshots_to_keep: 7 # older dated files are deleted by the daily refresh
 benchmark_index: "^NSEI" # Nifty 50, used for beta regression
 
 model:
