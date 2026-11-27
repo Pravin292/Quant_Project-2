@@ -508,6 +508,16 @@ def load_snapshot(ticker: str, directory: str | Path) -> Snapshot:
     return snap
 
 
+def prune_snapshots(ticker: str, directory: str | Path, keep: int) -> list[Path]:
+    """Delete all but the newest ``keep`` dated snapshots of a ticker."""
+    if keep < 1:
+        raise ValueError("At least one snapshot must be kept.")
+    old = sorted(Path(directory).glob(f"{ticker}_*.json"))[:-keep]
+    for path in old:
+        path.unlink()
+    return old
+
+
 def list_snapshot_tickers(directory: str | Path) -> list[str]:
     return sorted({p.name.rsplit("_", 1)[0] for p in Path(directory).glob("*_*.json")})
 
@@ -693,7 +703,7 @@ def parse_screener_excel(
         "balance": {
             "receivables": per_year(bs["Receivables"]),
             "inventory": per_year(bs["Inventory"]),
-            "payables": dict(none),
+            "payables": dict(zero),  # not in the export; see the quality warning
             "total_debt": per_year(bs["Borrowings"]),
             "lease_liabilities": dict(zero),
             "financial_debt": per_year(bs["Borrowings"]),
@@ -731,7 +741,7 @@ def parse_screener_excel(
     }
     snap["quality_warnings"] = [
         "Screener upload: payables, minority interest and lease split are not available "
-        "(payables left blank, minority interest and leases set to 0).",
+        "(all set to 0, so working capital is receivables plus inventory).",
         "CapEx is derived from the change in net block, CWIP and depreciation.",
         *check_quality(snap),
     ]

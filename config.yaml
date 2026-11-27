@@ -14,6 +14,7 @@ paths:
   cache_dir: "data/cache"
 
 peers: ["INFY.NS", "WIPRO.NS", "HCLTECH.NS", "TECHM.NS"]
+snapshots_to_keep: 7 # older dated files are deleted by the daily refresh
 benchmark_index: "^NSEI" # Nifty 50, used for beta regression
 
 model:
@@ -48,6 +49,8 @@ monte_carlo:
 
 api:
   max_request_bytes: 100000
+  max_upload_bytes: 2000000
+  max_unzipped_upload_bytes: 30000000
   rate_limit_per_minute: 120 # per client, per server instance
   result_cache_entries: 256
   price_cache_seconds: 300

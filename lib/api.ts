@@ -96,3 +96,17 @@ export async function download(path: string, body: unknown, fallbackName: string
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+/** POST a file's raw bytes (the Screener upload). */
+export async function upload<T>(path: string, file: File): Promise<T> {
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/octet-stream" },
+    body: file,
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || payload === null) {
+    throw new Error(payload?.error?.message ?? "The file could not be read.");
+  }
+  return payload as T;
+}

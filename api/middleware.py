@@ -66,8 +66,9 @@ async def guard(request: Request, call_next: Callable[[Request], Awaitable[Respo
     request_id = uuid.uuid4().hex[:12]
     response: Response
     too_large = error_response(413, "REQUEST_TOO_LARGE", "The request body is too large.")
+    limit = cfg["max_upload_bytes" if request.url.path == "/api/upload" else "max_request_bytes"]
     declared = request.headers.get("content-length", "")
-    if declared.isdigit() and int(declared) > cfg["max_request_bytes"]:
+    if declared.isdigit() and int(declared) > limit:
         response = too_large
     elif request.method != "OPTIONS" and rate_limited(
         client_key(request), cfg["rate_limit_per_minute"]
@@ -76,7 +77,7 @@ async def guard(request: Request, call_next: Callable[[Request], Awaitable[Respo
             429, "RATE_LIMITED", "Too many requests. Wait a minute and try again."
         )
         response.headers["Retry-After"] = "60"
-    elif request.method == "POST" and len(await request.body()) > cfg["max_request_bytes"]:
+    elif request.method == "POST" and len(await request.body()) > limit:
         response = too_large
     else:
         try:

@@ -105,6 +105,13 @@ def test_analysis_endpoints() -> None:
     assert rev["status"] == "solved"
 
 
+def test_peer_ranges_bracket_the_median() -> None:
+    p = client.get("/api/peers").json()
+    for kind in ("pe", "ev_ebitda"):
+        low, high = p[f"value_range_{kind}"]
+        assert low <= p[f"value_per_share_at_median_{kind}"] <= high
+
+
 def test_surface_centre_is_the_base_case() -> None:
     a = tcs()
     base = client.post("/api/valuation", json=a).json()["fair_value_per_share"]

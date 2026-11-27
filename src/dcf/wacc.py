@@ -147,15 +147,25 @@ def beta_from_snapshot(snap: Snapshot) -> BetaResult:
     return regression_beta(w["stock"], w["index"], w["dates"])
 
 
-def default_wacc_inputs(snap: Snapshot) -> tuple[WaccInputs, BetaResult]:
-    """Build WACC inputs from a snapshot: macro rates, regression beta, derived debt terms."""
+def default_wacc_inputs(
+    snap: Snapshot, assumed_beta: float | None = None
+) -> tuple[WaccInputs, BetaResult]:
+    """Build WACC inputs from a snapshot: macro rates, regression beta, derived debt terms.
+
+    ``assumed_beta`` is used only when the data has no price history (an Excel upload).
+    """
     macro = snap.get("macro", {})
     if "risk_free" not in macro or "equity_risk_premium" not in macro:
         raise DataUnavailableError(
             "Risk-free rate or equity risk premium missing from the snapshot; refresh the snapshot."
         )
     rf, erp = macro["risk_free"], macro["equity_risk_premium"]
-    beta = beta_from_snapshot(snap)
+    assumed = assumed_beta is not None and not snap["prices_weekly"]["dates"]
+    if assumed_beta is not None and assumed:
+        b = assumed_beta
+        beta = BetaResult(b, b, 0.0, b, b, 0.0, 0, None, None)
+    else:
+        beta = beta_from_snapshot(snap)
 
     debt = latest_value(snap, "balance", "total_debt") or 0.0  # includes leases (see config)
     mcap = snap["market"].get("market_cap_crore")
@@ -184,8 +194,12 @@ def default_wacc_inputs(snap: Snapshot) -> tuple[WaccInputs, BetaResult]:
         "risk_free": f"{rf['source']}; {rf['as_of']}",
         "equity_risk_premium": f"{erp['source']}; {erp['as_of']}",
         "beta": (
-            f"regression of {beta.observations} weekly returns vs {snap['prices_weekly']['index_ticker']} "
-            f"({beta.start_date} to {beta.end_date}), raw {beta.raw:.3f}, Blume-adjusted; fetched {snap_date}"
+            f"assumed {beta.adjusted:g} (the market average): the data has no price history"
+            if assumed
+            else (
+                f"regression of {beta.observations} weekly returns vs {snap['prices_weekly']['index_ticker']} "
+                f"({beta.start_date} to {beta.end_date}), raw {beta.raw:.3f}, Blume-adjusted; fetched {snap_date}"
+            )
         ),
         "cost_of_debt": kd_src,
         "debt_weight": f"total debt (incl. leases) / (debt + market cap); fetched {snap_date}",

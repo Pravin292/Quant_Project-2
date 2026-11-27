@@ -1,8 +1,10 @@
 "use client";
 
 import { useApi } from "@/lib/api";
-import { crore, pct, rupees, signedPct } from "@/lib/format";
-import type { Assumptions, ReverseDcf, Scenarios, Valuation } from "@/lib/types";
+import { crore, pct, rupees } from "@/lib/format";
+import type { Assumptions, Defaults, Probabilities, ReverseDcf, Scenarios, Valuation } from "@/lib/types";
+import FootballField from "./FootballField";
+import ScenarioCard from "./ScenarioCard";
 import SurfaceCard from "./SurfaceCard";
 import { Card, Notice, Table } from "./ui";
 
@@ -10,10 +12,18 @@ export default function SummaryTab({
   assumptions,
   valuation: v,
   scenarios,
+  probabilities,
+  onProbabilities,
+  week52,
+  ticker,
 }: {
   assumptions: Assumptions;
   valuation: Valuation;
   scenarios: Scenarios | null;
+  probabilities: Probabilities;
+  onProbabilities: (p: Probabilities) => void;
+  week52: Defaults["week_52"];
+  ticker: string | null;
 }) {
   const reverse = useApi<ReverseDcf>("/api/reverse-dcf", { assumptions });
   const op = assumptions.operating;
@@ -32,6 +42,8 @@ export default function SummaryTab({
         </div>
       )}
 
+      <FootballField assumptions={assumptions} scenarios={scenarios} week52={week52} ticker={ticker} />
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Headline assumptions">
           <Table
@@ -49,24 +61,7 @@ export default function SummaryTab({
           />
         </Card>
         <div className="space-y-4">
-          <Card title="Scenarios">
-            {scenarios ? (
-              <Table
-                head={["Case", "Per share", "vs price", "Weight"]}
-                rows={[
-                  ...(["bear", "base", "bull"] as const).map((n) => [
-                    <span key={n} className="capitalize">{n}</span>,
-                    rupees(scenarios.scenarios[n].fair_value_per_share),
-                    signedPct(scenarios.scenarios[n].upside),
-                    pct(scenarios.scenarios[n].probability, 0),
-                  ]),
-                  ["Weighted", rupees(scenarios.expected_fair_value), signedPct(scenarios.expected_upside), ""],
-                ]}
-              />
-            ) : (
-              <p className="text-sm text-(--ink-2)">Loading scenarios…</p>
-            )}
-          </Card>
+          <ScenarioCard scenarios={scenarios} probabilities={probabilities} onProbabilities={onProbabilities} />
           <Card title="What is the price assuming? (reverse DCF)">
             <p className="text-sm">{reverse.error ?? (reverse.loading ? "Solving…" : reverse.data?.message)}</p>
           </Card>

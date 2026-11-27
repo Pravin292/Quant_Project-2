@@ -94,6 +94,60 @@ function TickerField({ current, tickers, onTicker }: { current: string; tickers:
   );
 }
 
+/** Data source: the committed snapshot, or a Screener.in Excel export. */
+function DataSource({
+  uploaded,
+  onUpload,
+  onTicker,
+}: {
+  uploaded: boolean;
+  onUpload: (file: File) => Promise<void>;
+  onTicker: (t: string) => void;
+}) {
+  const [mode, setMode] = useState<"auto" | "upload">(uploaded ? "upload" : "auto");
+  const [status, setStatus] = useState<string | null>(null);
+  return (
+    <fieldset>
+      <legend className="text-xs">Data source</legend>
+      <div className="mt-1 flex gap-2">
+        <button type="button" className="chip" aria-pressed={mode === "auto"} onClick={() => { setMode("auto"); if (uploaded) onTicker("TCS.NS"); }}>
+          Auto-fetch
+        </button>
+        <button type="button" className="chip" aria-pressed={mode === "upload"} onClick={() => setMode("upload")}>
+          Upload Screener Excel
+        </button>
+      </div>
+      {mode === "upload" && (
+        <label className="mt-2 block text-xs text-(--ink-2)">
+          The “Export to Excel” file from Screener.in. It is read once and not stored.
+          <input
+            type="file"
+            accept=".xlsx"
+            className="mt-1 block w-full text-xs"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setStatus("Reading the file…");
+              try {
+                await onUpload(file);
+                setStatus(null);
+              } catch (error) {
+                setStatus((error as Error).message);
+              }
+              e.target.value = "";
+            }}
+          />
+        </label>
+      )}
+      {status && (
+        <p role="status" className="mt-1 text-xs">
+          {status}
+        </p>
+      )}
+    </fieldset>
+  );
+}
+
 export default function InputsPanel({
   defaults,
   assumptions,
@@ -101,6 +155,7 @@ export default function InputsPanel({
   onChange,
   onScenario,
   onTicker,
+  onUpload,
   onReset,
 }: {
   defaults: Defaults;
@@ -109,6 +164,7 @@ export default function InputsPanel({
   onChange: (next: Assumptions) => void;
   onScenario: (s: ScenarioName) => void;
   onTicker: (t: string) => void;
+  onUpload: (file: File) => Promise<void>;
   onReset: () => void;
 }) {
   const { operating: op, wacc, terminal } = assumptions;
@@ -123,7 +179,16 @@ export default function InputsPanel({
 
   return (
     <div className="space-y-4">
-      <TickerField key={defaults.company.ticker} current={defaults.company.ticker} tickers={defaults.tickers} onTicker={onTicker} />
+      <DataSource
+        key={defaults.company.source}
+        uploaded={defaults.company.ticker === "UPLOAD"}
+        onUpload={onUpload}
+        onTicker={onTicker}
+      />
+
+      {defaults.company.ticker !== "UPLOAD" && (
+        <TickerField key={defaults.company.ticker} current={defaults.company.ticker} tickers={defaults.tickers} onTicker={onTicker} />
+      )}
 
       <fieldset>
         <legend className="text-xs">Scenario</legend>

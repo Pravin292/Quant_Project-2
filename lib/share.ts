@@ -1,15 +1,16 @@
 /** F23: the whole valuation lives in the URL fragment, which never reaches the server. */
-import type { Assumptions, ScenarioName } from "./types";
+import type { Assumptions, Probabilities, ScenarioName } from "./types";
 
 export interface Shared {
   assumptions: Assumptions;
   scenario: ScenarioName;
+  probabilities?: Probabilities; // only when changed from the defaults
 }
 
-export function encodeShare({ assumptions, scenario }: Shared): string {
+export function encodeShare({ assumptions, scenario, probabilities }: Shared): string {
   const wacc = { ...assumptions.wacc };
   delete wacc.sources; // long text; restored from the defaults on load
-  const json = JSON.stringify({ v: 1, s: scenario, a: { ...assumptions, wacc } });
+  const json = JSON.stringify({ v: 1, s: scenario, p: probabilities, a: { ...assumptions, wacc } });
   const bytes = new TextEncoder().encode(json);
   return btoa(String.fromCharCode(...bytes))
     .replaceAll("+", "-")
@@ -36,14 +37,16 @@ function sameShape(value: unknown, template: unknown): boolean {
   return typeof value === typeof template;
 }
 
-export function decodeShare(text: string): { s: ScenarioName; a: Assumptions } | null {
+export function decodeShare(text: string): { s: ScenarioName; a: Assumptions; p?: Probabilities } | null {
   try {
     const binary = atob(text.replaceAll("-", "+").replaceAll("_", "/"));
     const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
     const data = JSON.parse(new TextDecoder().decode(bytes));
     if (data?.v !== 1 || !["bear", "base", "bull"].includes(data.s)) return null;
     if (typeof data.a?.ticker !== "string" || !data.a.operating) return null;
-    return { s: data.s, a: data.a as Assumptions };
+    const p = data.p;
+    if (p !== undefined && !["bear", "base", "bull"].every((n) => isNumber(p?.[n]))) return null;
+    return { s: data.s, a: data.a as Assumptions, p };
   } catch {
     return null;
   }

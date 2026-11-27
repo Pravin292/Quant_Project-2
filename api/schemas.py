@@ -122,3 +122,8 @@ class MonteCarloRequest(Strict):
 
 class ExportRequest(Strict):
     assumptions: Assumptions
+
+
+class ReportRequest(Strict):
+    assumptions: Assumptions
+    probabilities: Annotated[dict[str, Number], Field(max_length=3)] | None = None

@@ -171,3 +171,14 @@ def test_format_tables_runs() -> None:
     snap = loader.build_snapshot("TEST.NS", fake_raw(), now=NOW)
     text = loader.format_tables(snap)
     assert "INCOME STATEMENT" in text and "FY2026" in text
+
+
+def test_prune_keeps_the_newest_snapshots(tmp_path: Path) -> None:
+    for day in ("2026-01-01", "2026-01-03", "2026-01-02"):
+        (tmp_path / f"TCS.NS_{day}.json").write_text("{}")
+    (tmp_path / "INFY.NS_2026-01-01.json").write_text("{}")
+    removed = loader.prune_snapshots("TCS.NS", tmp_path, keep=2)
+    assert [p.name for p in removed] == ["TCS.NS_2026-01-01.json"]
+    assert len(list(tmp_path.glob("*.json"))) == 3
+    with pytest.raises(ValueError):
+        loader.prune_snapshots("TCS.NS", tmp_path, keep=0)

@@ -5,8 +5,10 @@ No finance formulas live here; every number comes from ``src/dcf``.
 
 from __future__ import annotations
 
+import io
 import math
 import time
+import zipfile
 from dataclasses import asdict, is_dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -104,4 +106,56 @@ def default_bundle(ticker: str) -> dict[str, Any]:
         "scenarios": scenarios.build_specs(bundle.historical),
         "bounds": load_config()["bounds"],
         "tickers": loader.list_snapshot_tickers(snapshots_dir()),
+    }
+
+
+def _check_workbook(data: bytes) -> None:
+    """Reject files that are not .xlsx or that would unpack to something huge."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            size = sum(i.file_size for i in archive.infolist())
+    except zipfile.BadZipFile:
+        raise DataUnavailableError("The upload is not an Excel (.xlsx) file.") from None
+    if size > load_config()["api"]["max_unzipped_upload_bytes"]:
+        raise DataUnavailableError("The workbook is too large once unpacked.")
+
+
+def upload_bundle(data: bytes) -> dict[str, Any]:
+    """Same shape as ``default_bundle``, built from a Screener upload.
+
+    Market-wide inputs (risk-free rate, equity risk premium) come from the main
+    company's snapshot. An upload has no price history, so beta starts at 1.
+    """
+    _check_workbook(data)
+    try:
+        snap = loader.parse_screener_excel(data, "UPLOAD")
+        snap["macro"] = snapshot(default_ticker())["macro"]
+        bundle = defaults.build_defaults(snap, peer_snapshots("UPLOAD"), assumed_beta=1.0)
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
+        raise DataUnavailableError(
+            "The workbook does not look like a complete Screener.in export."
+        ) from exc
+    h = bundle.historical
+    return {
+        "company": {
+            "ticker": "UPLOAD",
+            "name": snap["name"],
+            "source": snap["source"],
+            "fetched_at": snap["fetched_at"],
+            "fiscal_years": snap["fiscal_years"],
+            "quality_warnings": snap["quality_warnings"],
+        },
+        "assumptions": {**asdict(bundle.inputs), "ticker": None},
+        "sources": bundle.sources,
+        "price": {
+            "price": snap["market"].get("price"),
+            "as_of": snap["fetched_at"],
+            "source": "price stated in the uploaded file",
+            "fallback": True,
+        },
+        "week_52": {"week52_low": None, "week52_high": None},
+        "scenarios": scenarios.build_specs(h),
+        "bounds": load_config()["bounds"],
+        "tickers": loader.list_snapshot_tickers(snapshots_dir()),
+        "historical": {"years": h.table(), "sources": h.sources},
     }

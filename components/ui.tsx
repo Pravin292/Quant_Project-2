@@ -81,14 +81,14 @@ export function Skeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
-export function Table({ head, rows }: { head: ReactNode[]; rows: ReactNode[][] }) {
+export function Table({ head, rows, prose = false }: { head: ReactNode[]; rows: ReactNode[][]; prose?: boolean }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-(--line) text-(--ink-2)">
             {head.map((h, i) => (
-              <th key={i} scope="col" className={`py-1 pr-3 font-medium ${i ? "text-right" : "text-left"}`}>
+              <th key={i} scope="col" className={`py-1 pr-3 font-medium ${i && !prose ? "text-right" : "text-left"}`}>
                 {h}
               </th>
             ))}
@@ -99,11 +99,11 @@ export function Table({ head, rows }: { head: ReactNode[]; rows: ReactNode[][] }
             <tr key={r} className="border-b border-(--line) last:border-0">
               {row.map((cell, i) =>
                 i === 0 ? (
-                  <th key={i} scope="row" className="py-1 pr-3 text-left font-normal">
+                  <th key={i} scope="row" className="py-1 pr-3 text-left align-top font-normal">
                     {cell}
                   </th>
                 ) : (
-                  <td key={i} className="py-1 pr-3 text-right whitespace-nowrap">
+                  <td key={i} className={prose ? "py-1 pr-3 text-left align-top" : "py-1 pr-3 text-right whitespace-nowrap"}>
                     {cell}
                   </td>
                 ),

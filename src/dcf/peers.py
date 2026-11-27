@@ -108,6 +108,19 @@ def peer_cross_check(
     value_ev: float | None = None
     if med_ev is not None:
         value_ev = (med_ev * me.ebitda - debt + cash - mi) / shares_cr
+
+    def spread(values: list[float]) -> list[float] | None:
+        return [min(values), max(values)] if values else None
+
+    # lowest and highest value implied by any single peer (the football-field bars)
+    range_pe = spread([m.pe * me.net_income / shares_cr for m in peer_rows if m.pe is not None])
+    range_ev = spread(
+        [
+            (m.ev_ebitda * me.ebitda - debt + cash - mi) / shares_cr
+            for m in peer_rows
+            if m.ev_ebitda is not None
+        ]
+    )
     return {
         "subject": asdict(me),
         "peers": [asdict(m) for m in peer_rows],
@@ -115,6 +128,8 @@ def peer_cross_check(
         "median_ev_ebitda": med_ev,
         "value_per_share_at_median_pe": value_pe,
         "value_per_share_at_median_ev_ebitda": value_ev,
+        "value_range_pe": range_pe,
+        "value_range_ev_ebitda": range_ev,
         "dcf_fair_value": dcf_fair_value,
         "note": NOTE,
     }
