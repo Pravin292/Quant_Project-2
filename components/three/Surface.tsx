@@ -152,24 +152,38 @@ function Mesh({ grid, price, onHover }: { grid: Grid; price: number | null; onHo
   );
 }
 
-export default function Surface({ grid, price, height }: { grid: Grid; price: number | null; height?: number }) {
+export default function Surface({
+  grid,
+  price,
+  height,
+  compact = false,
+}: {
+  grid: Grid;
+  price: number | null;
+  height?: number;
+  compact?: boolean; // hero: readout under the stage
+}) {
   const [cell, setCell] = useState<[number, number] | null>(null);
   const [row, col] = cell ?? grid.centre;
   const value = grid.values[row]?.[col];
-  return (
-    <div>
-      <p className="mb-2 text-sm" aria-live="off">
+  const readout = (
+    <p className="my-2 text-sm" aria-live="off">
         <span className="text-(--ink-2)">{cell ? "Pointed at" : "Current case"}: </span>
         WACC {pct(grid.columns[col])}, terminal growth {pct(grid.rows[row])} →{" "}
         <strong>{rupees(value)}</strong>
         {value != null && price ? <span className="text-(--ink-2)"> ({pct(value / price - 1)} vs price)</span> : null}
       </p>
+  );
+  return (
+    <div>
+      {!compact && readout}
       <Scene
         height={height}
         label={`3D surface of fair value per share over WACC and terminal growth. The current case is ${rupees(grid.base_fair_value)} against a market price of ${rupees(price)}.`}
       >
         <Mesh grid={grid} price={price} onHover={setCell} />
       </Scene>
+      {compact && readout}
     </div>
   );
 }

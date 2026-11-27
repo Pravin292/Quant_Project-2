@@ -20,6 +20,7 @@ export interface Palette {
   above: string;
   below: string;
   neutral: string;
+  third: string;
   line: string;
   ink: string;
   dark: boolean;
@@ -28,8 +29,8 @@ export interface Palette {
 export function usePalette(): Palette {
   const dark = useMedia("(prefers-color-scheme: dark)");
   return dark
-    ? { above: "#3987e5", below: "#d95926", neutral: "#5d6270", line: "#3a4258", ink: "#f0efec", dark }
-    : { above: "#2a78d6", below: "#eb6834", neutral: "#c3c5cc", line: "#c9ced9", ink: "#0b0b0b", dark };
+    ? { above: "#3987e5", below: "#d95926", neutral: "#7a76a0", third: "#199e70", line: "#3b3670", ink: "#f0efec", dark }
+    : { above: "#2a78d6", below: "#eb6834", neutral: "#9a98b0", third: "#1baf7a", line: "#c9c6e8", ink: "#0b0b0b", dark };
 }
 
 class Fallback extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -55,6 +56,8 @@ const VIEWS: View[] = [
   { label: "Side", position: [11, 3, 0] },
   { label: "Top", position: [0, 12, 0.01] },
 ];
+
+const CHART_VIEW: View = { label: "Angle", position: [2.6, 4.2, 10.6] };
 
 function Controls({ view, spin }: { view: View; spin: boolean }) {
   const camera = useThree((s) => s.camera);
@@ -88,20 +91,23 @@ function Controls({ view, spin }: { view: View; spin: boolean }) {
 export default function Scene({
   label,
   height = 420,
+  chart = false,
   children,
 }: {
   label: string;
   height?: number;
+  chart?: boolean; // bar charts open facing front and do not spin
   children: ReactNode;
 }) {
-  const [view, setView] = useState(VIEWS[0]);
-  const [spin, setSpin] = useState(true);
+  const first = chart ? CHART_VIEW : VIEWS[0];
+  const [view, setView] = useState(first);
+  const [spin, setSpin] = useState(!chart);
   const still = useMedia("(prefers-reduced-motion: reduce)");
   return (
     <figure>
       <div className="stage relative overflow-hidden rounded-xl" style={{ height }} role="img" aria-label={label}>
         <Fallback>
-          <Canvas camera={{ position: VIEWS[0].position, fov: 42 }} dpr={[1, 2]}>
+          <Canvas camera={{ position: first.position, fov: 42 }} dpr={[1, 2]}>
             <ambientLight intensity={1.4} />
             <directionalLight position={[6, 10, 4]} intensity={1.6} />
             <directionalLight position={[-8, 4, -6]} intensity={0.5} />
@@ -112,7 +118,7 @@ export default function Scene({
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-1 text-xs">
         <span className="mr-1 text-(--ink-2)">Drag to rotate. View:</span>
-        {VIEWS.map((v) => (
+        {VIEWS.map((v) => (chart && v.label === "Angle" ? CHART_VIEW : v)).map((v) => (
           <button
             key={v.label}
             type="button"

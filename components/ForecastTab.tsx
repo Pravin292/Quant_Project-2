@@ -3,6 +3,7 @@
 import { num, pct } from "@/lib/format";
 import type { Assumptions, Valuation } from "@/lib/types";
 import { SeriesChart } from "./charts";
+import Bars3D from "./Bars3DLazy";
 import { Card, Table } from "./ui";
 
 function Cell({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
@@ -55,6 +56,23 @@ export default function ForecastTab({
 
   return (
     <div className="space-y-4">
+      <Card title="Forecast in 3D (₹ crore)" note="Back row NOPAT, middle FCFF, front present value. The tables below hold the same numbers.">
+        <Bars3D
+          label="3D bars of NOPAT, free cash flow and present value for five years"
+          columns={labels}
+          rows={["NOPAT", "FCFF", "Present value"]}
+          cells={[f.nopat, f.fcff, v.pv_fcff].flatMap((values, row) =>
+            values.map((value, col) => ({
+              col,
+              row,
+              from: 0,
+              to: value,
+              tone: (["third", "above", "below"] as const)[row],
+              tip: `${labels[col]}: ${["NOPAT", "FCFF", "Present value"][row]} ₹${num(value)} crore`,
+            })),
+          )}
+        />
+      </Card>
       <Card title="Free cash flow to the firm (₹ crore)">
         <SeriesChart
           kind="bar"

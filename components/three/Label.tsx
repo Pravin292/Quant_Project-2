@@ -8,10 +8,12 @@ export default function Label({
   position,
   text,
   dark,
+  size = 0.42,
 }: {
   position: [number, number, number];
   text: string;
   dark: boolean;
+  size?: number;
 }) {
   const { texture, ratio } = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -33,9 +35,8 @@ export default function Label({
     return { texture: t, ratio: canvas.width / canvas.height };
   }, [text, dark]);
   useEffect(() => () => texture.dispose(), [texture]);
-  const height = 0.42;
   return (
-    <sprite position={position} scale={[height * ratio, height, 1]} renderOrder={10}>
+    <sprite position={position} scale={[size * ratio, size, 1]} renderOrder={10}>
       <spriteMaterial map={texture} depthTest={false} transparent toneMapped={false} />
     </sprite>
   );

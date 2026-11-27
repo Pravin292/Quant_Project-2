@@ -4,6 +4,7 @@ import { useApi } from "@/lib/api";
 import { day, num, pct } from "@/lib/format";
 import type { Historical } from "@/lib/types";
 import { SeriesChart } from "./charts";
+import Bars3D from "./Bars3DLazy";
 import { Card, Notice, Skeleton, Table } from "./ui";
 
 export default function HistoricalTab({ ticker }: { ticker: string }) {
@@ -20,6 +21,21 @@ export default function HistoricalTab({ ticker }: { ticker: string }) {
   const percent = (v: number) => pct(v);
   return (
     <div className="space-y-4">
+      <Card title="Margins and reinvestment in 3D (% of revenue)" note="Back row EBITDA margin, middle EBIT margin, front CapEx.">
+        <Bars3D
+          label="3D bars of EBITDA margin, EBIT margin and CapEx as a share of revenue by fiscal year"
+          columns={years.map((y) => y.fiscal_year)}
+          rows={["EBITDA", "EBIT", "CapEx"]}
+          cells={["ebitda_margin", "ebit_margin", "capex_pct"].flatMap((key, row) =>
+            data.flatMap((y, col) => {
+              const value = y[key];
+              return typeof value === "number"
+                ? [{ col, row, from: 0, to: value, tone: (["third", "above", "below"] as const)[row], tip: `${y.fiscal_year}: ${["EBITDA margin", "EBIT margin", "CapEx"][row]} ${pct(value)}` }]
+                : [];
+            }),
+          )}
+        />
+      </Card>
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Revenue (₹ crore)">
           <SeriesChart kind="bar" data={data} x="fiscal_year" series={[{ key: "revenue", label: "Revenue" }]} format={(v) => num(v)} />

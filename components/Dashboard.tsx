@@ -50,9 +50,9 @@ export default function Dashboard() {
   const ready = defaults.data && defaults.data.company.ticker === start?.ticker ? defaults.data : null;
 
   return (
-    <div className="mx-auto max-w-[1500px] px-4 pb-16">
+    <div className="mx-auto max-w-[1560px] px-4 pb-20 sm:px-6">
       <header className="py-6">
-        <h1 className="text-2xl font-semibold sm:text-3xl">{ready?.company.name ?? "TCS"}: DCF valuation</h1>
+        <h1 className="brand-text text-3xl font-bold sm:text-4xl">{ready?.company.name ?? "TCS"}: DCF valuation</h1>
         <p className="text-sm text-(--ink-2)">
           Five-year discounted cash flow model. Move any assumption and the value updates.
           {ready && ` Statements fetched ${day(ready.company.fetched_at)}.`}
@@ -103,7 +103,8 @@ function Model({
   const [assumptions, setAssumptions] = useState<Assumptions>(initial.assumptions);
   const [scenario, setScenario] = useState<ScenarioName>(initial.scenario);
   const [tab, setTab] = useState<Tab>("Summary");
-  const [drawer, setDrawer] = useState(false);
+  const [drawer, setDrawer] = useState(false); // phones
+  const [panel, setPanel] = useState(true); // wide screens
   const [copied, setCopied] = useState<string | null>(null);
 
   const base = useDebounced(assumptions);
@@ -151,17 +152,47 @@ function Model({
   const busy = valuation.loading || scenarios.loading;
 
   return (
-    <div className="gap-4 lg:grid lg:grid-cols-[300px_minmax(0,1fr)]">
-      <aside className="mb-4 lg:mb-0">
-        <button
-          type="button"
-          className="w-full rounded border border-(--line) bg-(--surface) p-3 text-sm font-semibold lg:hidden"
-          aria-expanded={drawer}
-          onClick={() => setDrawer((d) => !d)}
-        >
-          {drawer ? "Hide assumptions" : "Edit assumptions"}
-        </button>
-        <div className={`${drawer ? "block" : "hidden"} panel mt-2 p-5 lg:sticky lg:top-2 lg:mt-0 lg:block lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto`}>
+    <div className="space-y-6">
+        <div className="sticky top-0 z-10 -mx-4 z-20 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page) px-4 py-2 lg:mx-0 lg:rounded-2xl lg:border">
+          <div aria-live="polite" className="text-sm">
+            Fair value <strong data-testid="fair-value">{rupees(v?.fair_value_per_share)}</strong> vs price{" "}
+            {rupees(v?.price)}
+            <span className="ml-2 text-(--ink-2)">{busy ? "updating…" : error ? "not updated" : ""}</span>
+          </div>
+          <span className="ml-auto flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="chip hidden lg:block"
+              aria-expanded={panel}
+              onClick={() => setPanel((p) => !p)}
+            >
+              {panel ? "Hide assumptions" : "Show assumptions"}
+            </button>
+            <button type="button" className="chip lg:hidden" aria-expanded={drawer} onClick={() => setDrawer((d) => !d)}>
+              {drawer ? "Hide assumptions" : "Edit assumptions"}
+            </button>
+            <button type="button" onClick={excel} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
+              {exporting ? "Preparing…" : "Download Excel"}
+            </button>
+            <button type="button" onClick={share} className="chip chip-solid">
+              {copied ?? "Share link"}
+            </button>
+          </span>
+        </div>
+        {(broken || (link !== null && !usable)) && (
+          <Notice kind="warn">That shared link could not be read, so the defaults are shown.</Notice>
+        )}
+        {usable && changed && (
+          <p className="text-xs text-(--ink-2)">
+            Custom assumptions are in this page&apos;s link, including the share price of {rupees(assumptions.bridge.price)}.
+          </p>
+        )}
+        {error && <Notice kind="error">{error}</Notice>}
+        {exportError && <Notice kind="error">{exportError}</Notice>}
+        {v && <Hero defaults={defaults} assumptions={lastActive} valuation={v} scenario={scenario} />}
+        <div className={`gap-6 lg:grid ${panel ? "lg:grid-cols-[320px_minmax(0,1fr)]" : ""}`}>
+      <aside className={panel ? "" : "lg:hidden"}>
+        <div className={`${drawer ? "block" : "hidden"} panel max-lg:fixed max-lg:inset-x-2 max-lg:bottom-10 max-lg:z-30 max-lg:max-h-[55vh] max-lg:overflow-y-auto max-lg:bg-(--surface-solid)! p-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto ${panel ? "lg:block" : "lg:hidden"}`}>
           <InputsPanel
             defaults={defaults}
             assumptions={assumptions}
@@ -176,34 +207,7 @@ function Model({
           />
         </div>
       </aside>
-
-      <main className="min-w-0 space-y-4">
-        {(broken || (link !== null && !usable)) && (
-          <Notice kind="warn">That shared link could not be read, so the defaults are shown.</Notice>
-        )}
-        {usable && changed && (
-          <p className="text-xs text-(--ink-2)">
-            Custom assumptions are in this page&apos;s link, including the share price of {rupees(assumptions.bridge.price)}.
-          </p>
-        )}
-        <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-(--line) bg-(--page) px-4 py-2 lg:mx-0 lg:rounded-2xl lg:border">
-          <div aria-live="polite" className="text-sm">
-            Fair value <strong data-testid="fair-value">{rupees(v?.fair_value_per_share)}</strong> vs price{" "}
-            {rupees(v?.price)}
-            <span className="ml-2 text-(--ink-2)">{busy ? "updating…" : error ? "not updated" : ""}</span>
-          </div>
-          <span className="ml-auto flex gap-2">
-            <button type="button" onClick={excel} disabled={exporting || busy || !!error} className="chip disabled:opacity-50">
-              {exporting ? "Preparing…" : "Download Excel"}
-            </button>
-            <button type="button" onClick={share} className="chip chip-solid">
-              {copied ?? "Share link"}
-            </button>
-          </span>
-        </div>
-        {error && <Notice kind="error">{error}</Notice>}
-        {exportError && <Notice kind="error">{exportError}</Notice>}
-        {v && <Hero defaults={defaults} valuation={v} scenario={scenario} />}
+      <main className="min-w-0 space-y-6">
         <div role="tablist" aria-label="Outputs" className="flex gap-2 overflow-x-auto py-1">
           {TABS.map((t) => (
             <button
@@ -238,6 +242,7 @@ function Model({
           )}
         </div>
       </main>
+        </div>
     </div>
   );
 }

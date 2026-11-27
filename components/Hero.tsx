@@ -1,10 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
+import { useApi } from "@/lib/api";
 import { day, rupees, signedPct } from "@/lib/format";
-import type { Defaults, Valuation } from "@/lib/types";
-import { Source } from "./ui";
+import type { Assumptions, Defaults, Grid, Valuation } from "@/lib/types";
+import { Skeleton, Source } from "./ui";
+
+const Surface = dynamic(() => import("./three/Surface"), { ssr: false, loading: () => <Skeleton rows={4} /> });
 
 /** Counts smoothly to a new value; jumps straight there if the user prefers less motion. */
 function useCountTo(target: number): number {
@@ -26,7 +30,18 @@ function useCountTo(target: number): number {
   return shown;
 }
 
-export default function Hero({ defaults, valuation: v, scenario }: { defaults: Defaults; valuation: Valuation; scenario: string }) {
+export default function Hero({
+  defaults,
+  assumptions,
+  valuation: v,
+  scenario,
+}: {
+  defaults: Defaults;
+  assumptions: Assumptions;
+  valuation: Valuation;
+  scenario: string;
+}) {
+  const surface = useApi<Grid>("/api/surface", assumptions);
   const fair = useCountTo(v.fair_value_per_share);
   const price = defaults.price;
   const above = v.upside !== null && v.upside >= 0;
@@ -42,13 +57,14 @@ export default function Hero({ defaults, valuation: v, scenario }: { defaults: D
       </div>
     );
   return (
-    <section className="panel rise grid gap-6 p-6 md:grid-cols-[auto_1fr] md:items-center">
+    <section className="panel rise relative overflow-hidden">
+      <div className="pointer-events-none relative z-10 flex flex-col gap-5 p-6 sm:p-8 lg:absolute lg:inset-y-0 lg:left-0 lg:w-[25rem] lg:justify-center [&_button]:pointer-events-auto">
       <div>
         <p className="text-xs tracking-widest text-(--ink-2) uppercase">
           Model fair value per share, {scenario} case
           <Source text={`Computed from the assumptions shown. ${defaults.sources.bridge}`} />
         </p>
-        <p className="display text-6xl font-bold sm:text-7xl">{rupees(fair)}</p>
+        <p className="display brand-text text-6xl font-bold sm:text-8xl lg:text-7xl xl:text-8xl">{rupees(fair)}</p>
         <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-(--line) px-3 py-1 text-sm">
           <span aria-hidden="true" style={{ color: above ? "var(--series-1)" : "var(--series-2)" }}>
             {above ? "▲" : "▼"}
@@ -66,6 +82,18 @@ export default function Hero({ defaults, valuation: v, scenario }: { defaults: D
           {defaults.week_52.week52_low !== null &&
             ` · 52-week range ${rupees(defaults.week_52.week52_low)} to ${rupees(defaults.week_52.week52_high)}`}
         </p>
+      </div>
+      </div>
+      <div className="px-3 pb-3 lg:ml-[25rem] lg:pt-3">
+        {surface.data ? (
+          <div className={surface.loading ? "opacity-60" : ""}>
+            <Surface grid={surface.data} price={assumptions.bridge.price} height={460} compact />
+          </div>
+        ) : surface.error ? (
+          <p className="p-6 text-sm text-(--ink-2)">{surface.error}</p>
+        ) : (
+          <Skeleton rows={6} />
+        )}
       </div>
     </section>
   );

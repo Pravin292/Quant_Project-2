@@ -3,7 +3,6 @@
 import { useApi } from "@/lib/api";
 import { crore, pct, rupees, signedPct } from "@/lib/format";
 import type { Assumptions, ReverseDcf, Scenarios, Valuation } from "@/lib/types";
-import SurfaceCard from "./SurfaceCard";
 import { Card, Notice, Table } from "./ui";
 
 export default function SummaryTab({
@@ -19,8 +18,6 @@ export default function SummaryTab({
   const op = assumptions.operating;
   return (
     <div className="space-y-4">
-      <SurfaceCard assumptions={assumptions} />
-
       {v.warnings.length > 0 && (
         <div className="space-y-2">
           <h2 className="text-sm font-semibold">Check before trusting this result</h2>

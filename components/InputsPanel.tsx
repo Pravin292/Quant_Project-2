@@ -134,7 +134,7 @@ export default function InputsPanel({
               type="button"
               aria-pressed={scenario === s}
               onClick={() => onScenario(s)}
-              className={`p-2 text-sm capitalize ${scenario === s ? "bg-(--ink) font-semibold text-(--surface)" : ""}`}
+              className={`p-2 text-sm capitalize ${scenario === s ? "bg-linear-to-r from-[#5b3fd6] to-[#1f6fc4] font-semibold text-white" : ""}`}
             >
               {s}
             </button>
@@ -148,8 +148,8 @@ export default function InputsPanel({
         )}
       </fieldset>
 
-      <fieldset>
-        <legend className="mb-1 text-sm font-semibold">Revenue growth</legend>
+      <details className="border-t border-(--line) pt-3" open>
+        <summary className="mb-2 text-sm font-semibold">Revenue growth</summary>
         {op.revenue_growth.map((g, i) => (
           <Slider
             key={i}
@@ -163,10 +163,10 @@ export default function InputsPanel({
             }
           />
         ))}
-      </fieldset>
+      </details>
 
-      <fieldset>
-        <legend className="mb-1 text-sm font-semibold">Operations</legend>
+      <details className="border-t border-(--line) pt-3">
+        <summary className="mb-2 text-sm font-semibold">Operations</summary>
         <Slider
           label="EBIT margin (average of years)"
           value={margin}
@@ -180,10 +180,10 @@ export default function InputsPanel({
         <Slider label="Tax rate" value={op.tax_rate} range={b.tax_rate} step={0.001} source={src.tax_rate} onChange={(v) => setOp({ tax_rate: v })} />
         <Slider label="CapEx % of revenue" value={op.capex_pct} range={b.capex_pct} step={0.001} source={src.capex_pct} onChange={(v) => setOp({ capex_pct: v })} />
         <Slider label="Working capital % of revenue" value={op.nwc_pct} range={b.nwc_pct} step={0.001} source={src.nwc_pct} onChange={(v) => setOp({ nwc_pct: v })} />
-      </fieldset>
+      </details>
 
-      <fieldset>
-        <legend className="mb-1 text-sm font-semibold">Discount rate and terminal value</legend>
+      <details className="border-t border-(--line) pt-3">
+        <summary className="mb-2 text-sm font-semibold">Discount rate and terminal value</summary>
         <Slider label="Risk-free rate" value={wacc.risk_free} range={b.risk_free} step={0.0005} source={src["wacc.risk_free"]} onChange={(v) => setWacc({ risk_free: v })} />
         <Slider label="Equity risk premium" value={wacc.equity_risk_premium} range={b.equity_risk_premium} step={0.0005} source={src["wacc.equity_risk_premium"]} onChange={(v) => setWacc({ equity_risk_premium: v })} />
         <Slider label="Beta" value={wacc.beta} range={b.beta} step={0.01} percent={false} source={src["wacc.beta"]} onChange={(v) => setWacc({ beta: v })} />
@@ -203,7 +203,7 @@ export default function InputsPanel({
           />
           Mid-year discounting (off = end of year)
         </label>
-      </fieldset>
+      </details>
 
       <button type="button" onClick={onReset} className="chip w-full">
         Reset to defaults
