@@ -36,8 +36,8 @@ Single runs on 27 Nov 2026 (scores vary between runs).
 
 | | Performance | Accessibility | Best practices | SEO | LCP | Blocking time | Layout shift |
 |---|---|---|---|---|---|---|---|
-| Mobile | MPERF | 100 | 96 | 100 | MLCP | MTBT | MCLS |
-| Desktop | DPERF | DA11Y | 96 | 100 | DLCP | DTBT | DCLS |
+| Mobile | 71 | 100 | 96 | 100 | 3.4 s | 400 ms | 0.19 |
+| Desktop | 97 | 100 | 96 | 100 | 0.7 s | 0 ms | 0.099 |
 
 Mobile performance is held back by the 3D library and chart code. The 3D scenes now load only
-when they are near the screen (mobile score rose from 46 to the value above).
+when they are near the screen (earlier runs of the mobile score ranged from 46 before that change to 80 after it).
