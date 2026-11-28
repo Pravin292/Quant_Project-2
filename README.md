@@ -90,8 +90,9 @@ The app shows the live price, so its upside figure differs from this table.
 * The hand-checkable "Chai Corner" example reproduces ₹26.8 per share.
 * The exported Excel workbook, recalculated by an independent formula engine, matches Python to
   about 1e-12 relative on cash flows, values and sensitivity cells.
-* Revenue and operating margin agree with TCS's published results. Net income, operating cash flow
-  and CapEx are **not yet fully ticked** against the annual report: see [docs/verification.md](docs/verification.md).
+* Revenue, tax, net income and operating cash flow match a secondary source (S&P data via
+  StockAnalysis); EBIT and CapEx differ by 0.2% to 2%. The annual report itself has **not** been
+  ticked line by line: see [docs/verification.md](docs/verification.md).
 * CI runs lint, type checks, tests and the production build on every push.
 * `pip-audit` and `npm audit` reported no known vulnerabilities on 27 Nov 2026.
 

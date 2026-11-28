@@ -43,6 +43,23 @@ Open TCS's annual report (Integrated Annual Report, consolidated statements) and
 
 Open item for you: tick the OCF and CapEx rows and net income against the annual report. The effect is small: they feed only the FCFF cross-check warning, not the valuation, which builds FCFF from EBIT, tax, D&A, CapEx and NWC.
 
+### Second web check, 28 Nov 2026
+Compared with StockAnalysis (data from S&P Global Market Intelligence), a secondary source. TCS's
+website refused automated reading, so the filed statements and annual report were **not** read.
+
+| Line (INR crore) | FY2026 ours / source | FY2025 ours / source | Result |
+|---|---|---|---|
+| Revenue | 267,021 / 267,021 | 255,324 / 255,324 | match |
+| Tax provision | 16,033 / 16,033 | 16,534 / 16,534 | match |
+| Net income | 49,210 / 49,210 | 48,553 / 48,553 | match |
+| Operating cash flow | 52,094 / 52,094 | 48,908 / 48,908 | match |
+| Operating income (EBIT) | 67,022 / 66,857 | 62,293 / 62,168 | differ by 0.2%, a data-vendor definition |
+| CapEx | 4,146 / 4,224 | 3,937 / 3,980 | differ by 1-2%, probably what is counted as CapEx |
+
+A search extract of TCS's Q4 FY2026 results also showed operating cash flow of 52,094. The CapEx
+and EBIT gaps are under 0.1% of revenue, so their effect on the valuation is very small (not
+re-run). No snapshot values were changed.
+
 ## 3. Hand-check two ratios
 * FY2026 revenue growth = 267,021 / 255,324 - 1 = 4.58%
 * FY2026 EBIT margin = 67,022 / 267,021 = 25.10%
